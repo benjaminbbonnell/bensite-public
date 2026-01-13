@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html data-bs-theme="dark" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Benjamin B Bonnell</title>
+    <link rel="stylesheet" href="{% static 'assets/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/Navbar-Right-Links-Dark-icons.css' %}">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .chart-container {
+            flex: 1; /* Ensures the chart container takes up available space */
+        }
+    </style>
+
+</head>
+
+
+
+<body>
+    <nav class="navbar navbar-expand-xl bg-dark py-3" data-bs-theme="dark">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <span data-bs-toggle="tooltip" data-bss-tooltip="" style="font-weight: bold;" title="Because the URL didn't tell you whose site you were on.">Benjamin B Bonnell</span>
+            </a>
+            <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-5">
+                <span class="visually-hidden">Toggle navigation</span>
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navcol-5">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="index">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="weather">Weather</a></li>
+                    <li class="nav-item"><a class="nav-link" href="weather/api">Weather API</a></li>
+                    <li class="nav-item"><a class="nav-link" href="aboutsection">About</a></li>
+                    <!-- Light/Dark Mode Toggle -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" href="#" id="themeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="navbar-toggler-icon"></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="themeDropdown">
+                            <li class="dropdown-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>Dark Mode</span>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="themeToggle" onchange="toggleTheme()">
+                                        <label class="form-check-label" for="themeToggle"></label>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <footer class="text-center bg-dark"></footer>
+    <script src="{% static 'assets/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'assets/js/bs-init.js' %}"></script>
+    <script>
+        // Function to toggle between light and dark modes
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-bs-theme', newTheme);
+            // Optionally save the theme preference in localStorage
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Apply the saved theme on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            const savedTheme = localStorage.getItem('theme') || 'dark'; // Default to dark
+            document.documentElement.setAttribute('data-bs-theme', savedTheme);
+            document.getElementById('themeToggle').checked = savedTheme === 'dark';
+        });
+    </script>
+    <footer class="text-center bg-dark text-light py-3 mt-4">
+        <p>&copy; 2025 Benjamin B Bonnell.</p>
+        <a href="https://github.com/benjaminbbonnell" class="text-light mx-2">GitHub</a>
+        <a href="https://www.linkedin.com/in/benjaminbbonnell/" class="text-light mx-2">LinkedIn</a>
+    </footer>
+</body>
+
+</html>

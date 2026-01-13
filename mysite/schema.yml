@@ -1,0 +1,203 @@
+openapi: 3.0.3
+info:
+  title: Weather API
+  version: 0.2.0
+  description: A collection of APIs to get data from benjaminbbonnell.com/weather/api
+paths:
+  /weather/api/hbc/:
+    get:
+      operationId: get_hours_before_chart
+      description: Retrieve weather forecast accuracy data grouped by API name and
+        hours before forecast.
+      parameters:
+      - in: query
+        name: api_name
+        schema:
+          type: array
+          items:
+            type: string
+        description: 'Filter results by API name(s). Use multiple times for multiple
+          values: ?api_name=openmeteo&api_name=tomorrowio'
+        explode: true
+        style: form
+        examples:
+          All:
+            value: ''
+          OpenMeteoOnly:
+            value: openmeteo
+            summary: OpenMeteo only
+          OpenMeteoAndTomorrowIO:
+            value:
+            - openmeteo
+            - tomorrowio
+            summary: OpenMeteo and TomorrowIO
+      - in: query
+        name: hoursbefore
+        schema:
+          type: integer
+        description: Filter results to forecasts with hours less than or equal to
+          this value.
+        examples:
+          24Hours:
+            value: 24
+            summary: 24 hours
+          72Hours:
+            value: 72
+            summary: 72 hours
+          None:
+            value: ''
+      tags:
+      - Weather API
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+  /weather/api/schema/:
+    get:
+      operationId: schema_retrieve
+      description: |-
+        OpenApi3 schema for this API. Format can be selected via content negotiation.
+
+        - YAML: application/vnd.oai.openapi
+        - JSON: application/vnd.oai.openapi+json
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - yaml
+      - in: query
+        name: lang
+        schema:
+          type: string
+          enum:
+          - af
+          - ar
+          - ar-dz
+          - ast
+          - az
+          - be
+          - bg
+          - bn
+          - br
+          - bs
+          - ca
+          - ckb
+          - cs
+          - cy
+          - da
+          - de
+          - dsb
+          - el
+          - en
+          - en-au
+          - en-gb
+          - eo
+          - es
+          - es-ar
+          - es-co
+          - es-mx
+          - es-ni
+          - es-ve
+          - et
+          - eu
+          - fa
+          - fi
+          - fr
+          - fy
+          - ga
+          - gd
+          - gl
+          - he
+          - hi
+          - hr
+          - hsb
+          - hu
+          - hy
+          - ia
+          - id
+          - ig
+          - io
+          - is
+          - it
+          - ja
+          - ka
+          - kab
+          - kk
+          - km
+          - kn
+          - ko
+          - ky
+          - lb
+          - lt
+          - lv
+          - mk
+          - ml
+          - mn
+          - mr
+          - ms
+          - my
+          - nb
+          - ne
+          - nl
+          - nn
+          - os
+          - pa
+          - pl
+          - pt
+          - pt-br
+          - ro
+          - ru
+          - sk
+          - sl
+          - sq
+          - sr
+          - sr-latn
+          - sv
+          - sw
+          - ta
+          - te
+          - tg
+          - th
+          - tk
+          - tr
+          - tt
+          - udm
+          - uk
+          - ur
+          - uz
+          - vi
+          - zh-hans
+          - zh-hant
+      tags:
+      - schema
+      responses:
+        '200':
+          content:
+            application/vnd.oai.openapi:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/yaml:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/vnd.oai.openapi+json:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+components: {}

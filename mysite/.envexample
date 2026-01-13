@@ -1,0 +1,19 @@
+export WEATHERCOM_KEY=asdf
+export ACCUWEATHER_KEY=asdf
+export VISUALCROSSING_KEY=asdf
+export TOMORROWIO_KEY=asdf
+export OPENWEATHERMAP_KEY=asdf
+
+export SECRET_KEY=asdf
+
+export SQLDBNAME=asdf
+export SQLHOST=asdf
+export SQLUSER=asdf
+export SQLPASSWORD=asdf
+export SQLPORT=13354
+
+export DJANGO_SQL_DBNAME=asdf
+export DJANGO_SQL_USER=asdf
+export DJANGO_SQL_PASSWORD=asdf
+export DJANGO_SQL_HOST=asdf
+export DJANGO_SQL_PORT=1234

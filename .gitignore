@@ -1,0 +1,47 @@
+# Environment variables and secrets
+*.env
+.env
+.env.local
+mysite/.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.Python
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# User-specific
+.cache/
+.ipynb_checkpoints
+.python/
+.ipython/
+.local/
+.ssh/
+.virtualenvs/
+.bashrc
+.gitconfig
+.lesshst
+.pgpass
+.profile
+.psql_history
+.pythonstartup.py
+.viminfo
+.vimrc
