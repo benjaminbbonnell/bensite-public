@@ -56,155 +56,175 @@ def getservices():
     return services
 
 def weathercomcollect(city_id, city, statecode, latitude, longitude, days):
-    api_url = f"http://api.weatherapi.com/v1/forecast.json?key={weatherapicom_apikey}&q={latitude},{longitude}&days={days}&aqi=no&alerts=no"
+    
+    try:
+        api_url = f"http://api.weatherapi.com/v1/forecast.json?key={weatherapicom_apikey}&q={latitude},{longitude}&days={days}&aqi=no&alerts=no"
 
-    response = requests.get(api_url, timeout=10)
-    data = response.json()
-    responsecode = response.status_code
+        response = requests.get(api_url, timeout=10)
+        data = response.json()
+        responsecode = response.status_code
 
-    #print("API url is: " + api_url)
-    #print("Reponse code is " + str(responsecode))
+        #print("API url is: " + api_url)
+        #print("Reponse code is " + str(responsecode))
 
-    forecasts = []
+        forecasts = []
 
-    for forecastday in data['forecast']['forecastday']:
-        for hour in forecastday['hour']:
-            forecast = {
-                'api_name': "weathercom",
-                'city_id': city_id,
-                'city': f"{city}, {statecode}",
-                'forecast_made': current_time,
-                'forecast_epoch': hour['time_epoch'],
-                'temp_f': hour['temp_f'],
-                'condition': hour['condition']['text'],
-                'precip_in': hour['precip_in'],
-                'feelslike_f': hour['feelslike_f'],
-                'will_it_rain': hour['will_it_rain'],
-                'chance_of_rain': hour['chance_of_rain'],
-                'chance_of_snow': hour['chance_of_snow']
-            }
-            forecasts.append(forecast)
+        for forecastday in data['forecast']['forecastday']:
+            for hour in forecastday['hour']:
+                forecast = {
+                    'api_name': "weathercom",
+                    'city_id': city_id,
+                    'city': f"{city}, {statecode}",
+                    'forecast_made': current_time,
+                    'forecast_epoch': hour['time_epoch'],
+                    'temp_f': hour['temp_f'],
+                    'condition': hour['condition']['text'],
+                    'precip_in': hour['precip_in'],
+                    'feelslike_f': hour['feelslike_f'],
+                    'will_it_rain': hour['will_it_rain'],
+                    'chance_of_rain': hour['chance_of_rain'],
+                    'chance_of_snow': hour['chance_of_snow']
+                }
+                forecasts.append(forecast)
 
-    df = pd.DataFrame(forecasts)
-    return df
+        df = pd.DataFrame(forecasts)
+        return df
+    except Exception as e:
+        print(f"could not collect weather forecast")
+        print(f"api url is{api_url}")
+        print(f"error is {e}")
 
 def visualcrossingcollect(city_id, city, statecode, latitude, longitude, days):
-    api_url = f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{latitude}%2C%20{longitude}?unitGroup=us&elements=datetime%2CdatetimeEpoch%2Cname%2Csnow%2Clatitude%2Clongitude%2Ctemp%2Cfeelslike%2Cprecip%2Cprecipprob%2Cpreciptype%2Cconditions&include=hours%2Cfcst&key={visualcrossing_apikey}&contentType=json"
-    response = requests.get(api_url, timeout=10)
-    data = response.json()
-    responsecode = response.status_code
+    try:
+        api_url = f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{latitude}%2C%20{longitude}?unitGroup=us&elements=datetime%2CdatetimeEpoch%2Cname%2Csnow%2Clatitude%2Clongitude%2Ctemp%2Cfeelslike%2Cprecip%2Cprecipprob%2Cpreciptype%2Cconditions&include=hours%2Cfcst&key={visualcrossing_apikey}&contentType=json"
+        response = requests.get(api_url, timeout=10)
+        data = response.json()
+        responsecode = response.status_code
 
-    #print("API url is: " + api_url)
-    #print("Reponse code is " + str(responsecode))
+        #print("API url is: " + api_url)
+        #print("Reponse code is " + str(responsecode))
 
-    forecasts = []
+        forecasts = []
 
-    for forecastday in data['days']:
-        for hour in forecastday['hours']:
-            preciptype = hour.get('preciptype', [])
-            preciptype_str = ','.join(preciptype) if preciptype else ''
+        for forecastday in data['days']:
+            for hour in forecastday['hours']:
+                preciptype = hour.get('preciptype', [])
+                preciptype_str = ','.join(preciptype) if preciptype else ''
 
-            forecast = {
-                'api_name': "visualcrossing",
-                'city_id': city_id,
-                'city': f"{city}, {statecode}",
-                'forecast_made': current_time,
-                'forecast_epoch': hour['datetimeEpoch'],
-                'temp_f': hour['temp'],
-                'condition': hour['conditions'],
-                'precip_in': hour['precip'],
-                'precip_prob': hour['precipprob'],
-                'feelslike_f': hour['feelslike'],
-                'snow_in': hour['snow'],
-                'precip_type': preciptype_str,
-            }
-            forecasts.append(forecast)
+                forecast = {
+                    'api_name': "visualcrossing",
+                    'city_id': city_id,
+                    'city': f"{city}, {statecode}",
+                    'forecast_made': current_time,
+                    'forecast_epoch': hour['datetimeEpoch'],
+                    'temp_f': hour['temp'],
+                    'condition': hour['conditions'],
+                    'precip_in': hour['precip'],
+                    'precip_prob': hour['precipprob'],
+                    'feelslike_f': hour['feelslike'],
+                    'snow_in': hour['snow'],
+                    'precip_type': preciptype_str,
+                }
+                forecasts.append(forecast)
 
-    df = pd.DataFrame(forecasts)
-    return df
+        df = pd.DataFrame(forecasts)
+        return df
+    except Exception as e:
+        print(f"could not collect weather forecast")
+        print(f"api url is{api_url}")
+        print(f"error is {e}")
 
 def tomorrowiocollect(city_id, city, statecode, latitude, longitude, days):
     #https://docs.tomorrow.io/reference/weather-forecast
     #the api should be returning a precipitation type but it's not
+    try:
+        api_url = f"https://api.tomorrow.io/v4/weather/forecast?location={latitude},{longitude}&timesteps=1h&units=imperial&apikey={tomorrowio_apikey}"
+        response = requests.get(api_url, timeout=10)
+        data = response.json()
+        responsecode = response.status_code
 
-    api_url = f"https://api.tomorrow.io/v4/weather/forecast?location={latitude},{longitude}&timesteps=1h&units=imperial&apikey={tomorrowio_apikey}"
-    response = requests.get(api_url, timeout=10)
-    data = response.json()
-    responsecode = response.status_code
+        #print("API url is: " + api_url)
+        #print("Reponse code is " + str(responsecode))
 
-    #print("API url is: " + api_url)
-    #print("Reponse code is " + str(responsecode))
+        forecasts = []
 
-    forecasts = []
+        for hour in data['timelines']['hourly']:
+            forecast_time = datetime.datetime.strptime(hour['time'], '%Y-%m-%dT%H:%M:%SZ')
+            forecast_time = forecast_time.replace(tzinfo=pytz.UTC)
+            epoch_time = int(forecast_time.timestamp())
 
-    for hour in data['timelines']['hourly']:
-        forecast_time = datetime.datetime.strptime(hour['time'], '%Y-%m-%dT%H:%M:%SZ')
-        forecast_time = forecast_time.replace(tzinfo=pytz.UTC)
-        epoch_time = int(forecast_time.timestamp())
+            forecast = {
+                'api_name': "tomorrowio",
+                'city_id': city_id,
+                'city': f"{city}, {statecode}",
+                'forecast_made': current_time,
+                'forecast_epoch': epoch_time,
+                'temp_f': hour['values']['temperature'],
+                'feelslike_f': hour['values']['temperatureApparent'],
+                'condition': hour['values']['weatherCode'],
+                'snow_in': hour['values']['snowAccumulation'],
+                'rain_in': hour['values']['rainAccumulation'],
+    #           'sleet_in': hour['values']['sleetAccumulation'], - API is not returning this right now. Not sure why.
+                'precip_prob': hour['values']['precipitationProbability'],
+            }
+            forecasts.append(forecast)
 
-        forecast = {
-            'api_name': "tomorrowio",
-            'city_id': city_id,
-            'city': f"{city}, {statecode}",
-            'forecast_made': current_time,
-            'forecast_epoch': epoch_time,
-            'temp_f': hour['values']['temperature'],
-            'feelslike_f': hour['values']['temperatureApparent'],
-            'condition': hour['values']['weatherCode'],
-            'snow_in': hour['values']['snowAccumulation'],
-            'rain_in': hour['values']['rainAccumulation'],
-#           'sleet_in': hour['values']['sleetAccumulation'], - API is not returning this right now. Not sure why.
-            'precip_prob': hour['values']['precipitationProbability'],
-        }
-        forecasts.append(forecast)
-
-    df = pd.DataFrame(forecasts)
-    return df
+        df = pd.DataFrame(forecasts)
+        return df
+    except Exception as e:
+        print(f"could not collect weather forecast")
+        print(f"api url is{api_url}")
+        print(f"error is {e}")
 
 def openmeteocollect(city_id, city, statecode, latitude, longitude, days):
     #https://open-meteo.com/en/docs
     #no api key needed, 14 day forecast
 
-    api_url = f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,rain,snowfall&timezone=GMT&temperature_unit=fahrenheit&precipitation_unit=inch&forecast_days={days}"
-    response = requests.get(api_url, timeout=10)
-    data = response.json()
-    responsecode = response.status_code
-    #print("API url is: " + api_url)
-    #print("Reponse code is " + str(responsecode))
-    #print(" ")
+    try:
+        api_url = f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,rain,snowfall&timezone=GMT&temperature_unit=fahrenheit&precipitation_unit=inch&forecast_days={days}"
+        response = requests.get(api_url, timeout=10)
+        data = response.json()
+        responsecode = response.status_code
+        #print("API url is: " + api_url)
+        #print("Reponse code is " + str(responsecode))
+        #print(" ")
 
 
-    time_list = data['hourly']['time']
-    temperature_list = data['hourly']['temperature_2m']
-    apparent_temperature_list = data['hourly']['apparent_temperature']
-    precip_prob_list = data['hourly']['precipitation_probability']
-    precipitation_list = data['hourly']['precipitation']
-    rain_list = data['hourly']['rain']
-    snowfall_list = data['hourly']['snowfall']
+        time_list = data['hourly']['time']
+        temperature_list = data['hourly']['temperature_2m']
+        apparent_temperature_list = data['hourly']['apparent_temperature']
+        precip_prob_list = data['hourly']['precipitation_probability']
+        precipitation_list = data['hourly']['precipitation']
+        rain_list = data['hourly']['rain']
+        snowfall_list = data['hourly']['snowfall']
 
-    epoch_time_list = []
-    for timestamp in time_list:
-        dt = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M")
-        dt = dt.replace(tzinfo=pytz.UTC)
-        epoch_time = int(dt.timestamp())
-        epoch_time_list.append(epoch_time)
+        epoch_time_list = []
+        for timestamp in time_list:
+            dt = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M")
+            dt = dt.replace(tzinfo=pytz.UTC)
+            epoch_time = int(dt.timestamp())
+            epoch_time_list.append(epoch_time)
 
-    dfdata = {
-        'api_name': "openmeteo",
-        'city_id': city_id,
-        'city': f"{city}, {statecode}",
-        'forecast_made': current_time,
-        'forecast_epoch' : epoch_time_list,
-        'temp_f' : temperature_list,
-        'feelslike_f' : apparent_temperature_list,
-        'precip_prob' : precip_prob_list,
-        'precip_in' : precipitation_list,
-        'rain_in' : rain_list,
-        'snow_in' : snowfall_list
-    }
+        dfdata = {
+            'api_name': "openmeteo",
+            'city_id': city_id,
+            'city': f"{city}, {statecode}",
+            'forecast_made': current_time,
+            'forecast_epoch' : epoch_time_list,
+            'temp_f' : temperature_list,
+            'feelslike_f' : apparent_temperature_list,
+            'precip_prob' : precip_prob_list,
+            'precip_in' : precipitation_list,
+            'rain_in' : rain_list,
+            'snow_in' : snowfall_list
+        }
 
-    df = pd.DataFrame(dfdata)
-    return(df)
+        df = pd.DataFrame(dfdata)
+        return(df)
+    except Exception as e:
+        print(f"could not collect weather forecast")
+        print(f"api url is{api_url}")
+        print(f"error is {e}")
 
 #https://naysan.ca/2020/05/09/pandas-to-postgresql-using-psycopg2-bulk-insert-performance-benchmark/
 def dbsend(forecastframe):
