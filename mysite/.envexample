@@ -17,3 +17,5 @@ export DJANGO_SQL_USER=asdf
 export DJANGO_SQL_PASSWORD=asdf
 export DJANGO_SQL_HOST=asdf
 export DJANGO_SQL_PORT=1234
+
+DEBUG=False
