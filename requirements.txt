@@ -5,5 +5,5 @@ drf-spectacular-sidecar==2026.1.1
 psycopg2-binary==2.9.10
 python-dotenv==1.0.1
 requests==2.32.3
-pandas==2.2.2
+pandas==2.2.3
 pytz==2024.1
