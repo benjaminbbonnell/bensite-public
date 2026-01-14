@@ -15,7 +15,7 @@ import os
 from dotenv import load_dotenv
 
 # Load .env from the current mysite directory
-env_path = Path(__file__).resolve().parent / '.env'
+env_path = Path(__file__).resolve().parent.parent / '.env'
 load_dotenv(dotenv_path=env_path)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
