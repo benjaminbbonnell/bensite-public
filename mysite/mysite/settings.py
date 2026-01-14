@@ -14,9 +14,9 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 
-#Have to keep this line because adding the dotenv to the WSGI file doesn't work. Likely a pythonanywhere specific problem.
-project_folder = os.path.expanduser('~/mysite/.env')
-load_dotenv(project_folder)
+# Load .env from the current mysite directory
+env_path = Path(__file__).resolve().parent / '.env'
+load_dotenv(dotenv_path=env_path)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,7 +31,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['www.benjaminbbonnell.com']
+ALLOWED_HOSTS = ['www.benjaminbbonnell.com', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'bootstrap5',
+    'django_bootstrap5',
     'rest_framework',
     'drf_spectacular',
     'drf_spectacular_sidecar',
