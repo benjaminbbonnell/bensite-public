@@ -12,6 +12,7 @@ __pycache__/
 dist/
 build/
 .Python
+.venv/
 
 # IDE
 .vscode/
