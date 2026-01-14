@@ -2,6 +2,7 @@ import os
 import sys
 import time
 import datetime
+from pathlib import Path
 
 import requests
 import psycopg2
@@ -11,12 +12,13 @@ from io import StringIO
 from dotenv import load_dotenv
 import pytz
 
-
 import django
 from django.db import connection
-sys.path.append("/home/benjaminbbonnell/mysite")
+
+# Setup Django
+project_root = Path(__file__).resolve().parent.parent / 'mysite'
+sys.path.insert(0, str(project_root))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
-os.environ["DJANGO_SETTINGS_MODULE"] = "mysite.settings"
 django.setup()
 
 from weather.models import WeatherServices, Locations

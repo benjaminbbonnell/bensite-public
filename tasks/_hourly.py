@@ -2,9 +2,11 @@ import os
 import sys
 import django
 from datetime import datetime
+from pathlib import Path
 
 # Setup Django
-sys.path.append("/home/benjaminbbonnell/mysite")
+project_root = Path(__file__).resolve().parent.parent / 'mysite'
+sys.path.insert(0, str(project_root))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
 django.setup()
 
@@ -15,7 +17,7 @@ from analysis import main as analysis_main
 def run_hourly():
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"\n{'='*60}")
-    print(f"[{timestamp}]: started daily tasks.")
+    print(f"[{timestamp}]: started hourly tasks.")
 
     try:
         collector_main()

@@ -7,9 +7,11 @@ import os
 import sys
 import django
 from datetime import datetime
+from pathlib import Path
 
 # Setup Django
-sys.path.append("/home/benjaminbbonnell/mysite")
+project_root = Path(__file__).resolve().parent.parent / 'mysite'
+sys.path.insert(0, str(project_root))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
 django.setup()
 

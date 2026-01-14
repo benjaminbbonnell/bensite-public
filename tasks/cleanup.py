@@ -2,15 +2,16 @@ import os
 import sys
 import django
 import time
+from pathlib import Path
 from django.db import connection
 from django.db import transaction
 from django.conf import settings
 import psycopg2
 
-
-sys.path.append("/home/benjaminbbonnell/mysite")
+# Setup Django
+project_root = Path(__file__).resolve().parent.parent / 'mysite'
+sys.path.insert(0, str(project_root))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
-os.environ["DJANGO_SETTINGS_MODULE"] = "mysite.settings"
 django.setup()
 
 from weather.models import ForecastPivot, SiteStats

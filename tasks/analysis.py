@@ -1,10 +1,11 @@
 import psycopg2
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 
-#don't know why the WSGI file isn't working but whatever
-project_folder = os.path.expanduser('~/mysite/.env')
-load_dotenv(project_folder)
+# Load .env from the mysite directory
+env_path = Path(__file__).resolve().parent.parent / 'mysite' / '.env'
+load_dotenv(dotenv_path=env_path)
 
 sqldbname = os.environ.get('SQLDBNAME')
 sqlhost = os.environ.get('SQLHOST')
