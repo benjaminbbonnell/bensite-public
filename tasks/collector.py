@@ -41,6 +41,8 @@ sqlport = os.environ.get('SQLPORT')
 # 1 = send to test forecast table
 DEBUG = 0
 
+TIMEOUT = 15
+
 days = 4
 
 current_time = round((int(time.time())) / 3600) * 3600
@@ -60,7 +62,7 @@ def weathercomcollect(city_id, city, statecode, latitude, longitude, days):
     try:
         api_url = f"http://api.weatherapi.com/v1/forecast.json?key={weatherapicom_apikey}&q={latitude},{longitude}&days={days}&aqi=no&alerts=no"
 
-        response = requests.get(api_url, timeout=10)
+        response = requests.get(api_url, timeout=TIMEOUT)
         data = response.json()
         responsecode = response.status_code
 
@@ -97,7 +99,7 @@ def weathercomcollect(city_id, city, statecode, latitude, longitude, days):
 def visualcrossingcollect(city_id, city, statecode, latitude, longitude, days):
     try:
         api_url = f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{latitude}%2C%20{longitude}?unitGroup=us&elements=datetime%2CdatetimeEpoch%2Cname%2Csnow%2Clatitude%2Clongitude%2Ctemp%2Cfeelslike%2Cprecip%2Cprecipprob%2Cpreciptype%2Cconditions&include=hours%2Cfcst&key={visualcrossing_apikey}&contentType=json"
-        response = requests.get(api_url, timeout=10)
+        response = requests.get(api_url, timeout=TIMEOUT)
         data = response.json()
         responsecode = response.status_code
 
@@ -139,7 +141,7 @@ def tomorrowiocollect(city_id, city, statecode, latitude, longitude, days):
     #the api should be returning a precipitation type but it's not
     try:
         api_url = f"https://api.tomorrow.io/v4/weather/forecast?location={latitude},{longitude}&timesteps=1h&units=imperial&apikey={tomorrowio_apikey}"
-        response = requests.get(api_url, timeout=10)
+        response = requests.get(api_url, timeout=TIMEOUT)
         data = response.json()
         responsecode = response.status_code
 
@@ -182,7 +184,7 @@ def openmeteocollect(city_id, city, statecode, latitude, longitude, days):
 
     try:
         api_url = f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,rain,snowfall&timezone=GMT&temperature_unit=fahrenheit&precipitation_unit=inch&forecast_days={days}"
-        response = requests.get(api_url, timeout=10)
+        response = requests.get(api_url, timeout=TIMEOUT)
         data = response.json()
         responsecode = response.status_code
         #print("API url is: " + api_url)
