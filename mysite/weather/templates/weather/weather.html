@@ -46,7 +46,7 @@
         }
 
         .chart-container {
-            flex: 1; /* Ensures the chart container takes up available space */
+            flex: 1;
         }
     </style>
 </head>
@@ -65,7 +65,6 @@
                     <li class="nav-item"><a class="nav-link" href="{% url 'weather:redirect_to_bensite_index' %}">Home</a></li>
                     <li class="nav-item"><a class="nav-link active" href="weather">Weather</a></li>
                     <li class="nav-item"><a class="nav-link" href="api">Weather API</a></li>
-                    <li class="nav-item"><a class="nav-link" href="aboutsection">About</a></li>
                     <!-- Light/Dark Mode Toggle -->
                     <li class="nav-item dropdown">
                         <a class="nav-link" href="#" id="themeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -163,7 +162,6 @@
         function updateChart(hoursbefore) {
             console.log("Updating chart with hoursbefore:", hoursbefore);
 
-            // Filter the data points based on the hours before value in the category names
             const filteredSeries = ma_series_original.map(api => {
                 console.log("Processing API:", api.name);
                 return {
@@ -246,16 +244,13 @@
     <script src="{% static 'assets/js/bs-init.js' %}"></script>
 
     <script>
-        // Function to toggle between light and dark modes
         function toggleTheme() {
             const currentTheme = document.documentElement.getAttribute('data-bs-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             document.documentElement.setAttribute('data-bs-theme', newTheme);
-            // Optionally save the theme preference in localStorage
             localStorage.setItem('theme', newTheme);
         }
 
-        // Apply the saved theme on page load
         document.addEventListener('DOMContentLoaded', function () {
             const savedTheme = localStorage.getItem('theme') || 'dark'; // Default to dark
             document.documentElement.setAttribute('data-bs-theme', savedTheme);
