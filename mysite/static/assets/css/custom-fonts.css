@@ -1,0 +1,25 @@
+/* Custom Font Override for Bootstrap */
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet');
+
+:root {
+  /* Override the default Bootstrap sans-serif font with Google Font */
+  --bs-body-font-family: 'EB Garamond', sans-serif;
+  
+  /* Optional: Override monospace font */
+  --bs-font-monospace: 'EB Garamond', monospace;
+}
+
+/* Apply to all elements that inherit the font */
+body {
+  font-family: var(--bs-body-font-family);
+}
+
+/* Apply custom font to Highcharts titles and labels */
+.highcharts-title,
+.highcharts-axis-title,
+.highcharts-legend-title,
+.highcharts-legend-item {
+  font-family: var(--bs-body-font-family) !important;
+}
