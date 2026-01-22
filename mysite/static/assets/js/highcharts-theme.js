@@ -1,5 +1,5 @@
 // Apply theme based on current data-bs-theme
-function applyHighchartsTheme() {
+window.applyHighchartsTheme = function() {
     const theme = document.documentElement.getAttribute('data-bs-theme') || 'dark';
     
     if (theme === 'dark') {
@@ -88,6 +88,7 @@ function applyHighchartsTheme() {
                 }
             },
             credits: {
+                enabled: false,
                 style: {
                     color: '#666'
                 }
@@ -185,6 +186,7 @@ function applyHighchartsTheme() {
                 }
             },
             credits: {
+                enabled: false,
                 style: {
                     color: '#999'
                 }

@@ -15,20 +15,17 @@
         <div id="hbc_container"></div>
     </div>
 
-    <script src="{% static 'assets/js/highcharts-theme.js' %}"></script>
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    let hbc_chart = null;
+    const hbc_series = {{ hbc_series|safe }};
+    const hbc_categories = {{ hbc_categories|safe }};
 
-      Highcharts.setOptions({
-        credits: {
-          enabled: false
-        }
-      });
-      
-      const hbc_series = {{ hbc_series|safe }};
-      const hbc_categories = {{ hbc_categories|safe }};
-
-      Highcharts.chart('hbc_container', {
+    function renderHBCChart() {
+      console.log("Rendering HBC chart...");
+      if (hbc_chart) {
+        hbc_chart.destroy();
+      }
+      hbc_chart = Highcharts.chart('hbc_container', {
         chart: {
           type: 'line'
         },
@@ -56,6 +53,19 @@
         },
         series: hbc_series
       });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      console.log("DOMContentLoaded: Initializing HBC chart");
+      applyHighchartsTheme();
+      renderHBCChart();
+    });
+
+    // Listen for theme changes and redraw charts
+    document.addEventListener('themeChanged', function(event) {
+      console.log("themeChanged event received, redrawing HBC chart");
+      applyHighchartsTheme();
+      renderHBCChart();
     });
     </script>
 
@@ -75,96 +85,98 @@
     </div>
 
     <script>
+    let ma_chart = null;
+    const ma_series_original = {{ ma_series|safe }};
+    const ma_categories_original = {{ ma_categories|safe }};
+    let currentHoursBefore = 12;
+
+    function updateChart(hoursbefore) {
+        console.log("Updating MA chart with hoursbefore:", hoursbefore);
+        currentHoursBefore = hoursbefore;
+
+        const filteredSeries = ma_series_original.map(api => {
+            return {
+                name: api.name,
+                data: api.data.filter(point => {
+                    const category = ma_categories_original[point.x];
+                    return category.includes(`${hoursbefore} hours before`);
+                })
+            };
+        });
+
+        try {
+            const filteredCategories = ma_categories_original.filter(category =>
+                category.includes(`${hoursbefore} hours before`)
+            );
+
+            const monthNames = filteredCategories.map(category =>
+                category.split(' - ')[0]
+            );
+
+            const updatedSeries = filteredSeries.map(api => ({
+                name: api.name,
+                data: api.data.map((point, index) => ({
+                    x: index,
+                    y: point.y
+                }))
+            }));
+
+            const ma_container = document.getElementById('ma_container');
+            if (ma_chart) {
+              ma_chart.destroy();
+            }
+            ma_chart = Highcharts.chart(ma_container, {
+                chart: {
+                    type: 'line'
+                },
+                title: {
+                    text: `Average Difference by Month (${hoursbefore} ${hoursbefore === 1 ? 'Hour' : 'Hours'} Before)`
+                },
+                xAxis: {
+                    title: {
+                        text: 'Month'
+                    },
+                    categories: monthNames
+                },
+                yAxis: {
+                    title: {
+                        text: 'Average Difference'
+                    },
+                    reversed: false
+                },
+                series: updatedSeries
+            });
+            console.log("MA chart rendered successfully");
+        } catch (error) {
+            console.error("Error rendering MA chart:", error);
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
-        console.log("DOMContentLoaded event fired");
-        const ma_series_original = {{ ma_series|safe }};
-        const ma_categories_original = {{ ma_categories|safe }};
+        console.log("DOMContentLoaded: Initializing MA chart");
+        
         const dropdown = document.getElementById('hoursDropdown');
         const ma_container = document.getElementById('ma_container');
 
-        console.log("Original Series:", ma_series_original);
-        console.log("Original Categories:", ma_categories_original);
-        console.log("Chart Container Dimensions:", ma_container ? ma_container.offsetWidth : 'not found', ma_container ? ma_container.offsetHeight : 'not found');
-        console.log("Selected hours:", dropdown ? dropdown.value : 'dropdown not found');
-
-        function updateChart(hoursbefore) {
-            console.log("Updating chart with hoursbefore:", hoursbefore);
-
-            const filteredSeries = ma_series_original.map(api => {
-                console.log("Processing API:", api.name);
-                return {
-                    name: api.name,
-                    data: api.data.filter(point => {
-                        const category = ma_categories_original[point.x];
-                        return category.includes(`${hoursbefore} hours before`);
-                    })
-                };
-            });
-
-            console.log("Filtered Series:", filteredSeries);
-
-            try {
-                // Filter categories to only show months for the selected hours
-                const filteredCategories = ma_categories_original.filter(category =>
-                    category.includes(`${hoursbefore} hours before`)
-                );
-
-                // Extract just the month names from the filtered categories
-                const monthNames = filteredCategories.map(category =>
-                    category.split(' - ')[0] // Take the part before " - "
-                );
-
-                // Update the data points to use sequential x values
-                const updatedSeries = filteredSeries.map(api => ({
-                    name: api.name,
-                    data: api.data.map((point, index) => ({
-                        x: index,
-                        y: point.y
-                    }))
-                }));
-
-                Highcharts.chart(ma_container, {
-                    chart: {
-                        type: 'line'
-                    },
-                    title: {
-                        text: `Average Difference by Month (${hoursbefore} ${hoursbefore === 1 ? 'Hour' : 'Hours'} Before)`
-                    },
-                    xAxis: {
-                        title: {
-                            text: 'Month'
-                        },
-                        categories: monthNames
-                    },
-                    yAxis: {
-                        title: {
-                            text: 'Average Difference'
-                        },
-                        reversed: false
-                    },
-                    series: updatedSeries
-                });
-                console.log("Chart rendered successfully with filtered categories:", monthNames);
-            } catch (error) {
-                console.error("Error rendering chart:", error);
-            }
-        }
-
-        // Initial chart rendering
         if (dropdown && ma_container) {
             updateChart(parseInt(dropdown.value));
 
-            // Update chart when dropdown value changes
             dropdown.addEventListener('change', function () {
                 console.log("Dropdown value changed to:", this.value);
                 updateChart(parseInt(this.value));
             });
         } else {
-            console.error("Required elements not found:", {
+            console.error("MA Required elements not found:", {
                 dropdown: !!dropdown,
                 container: !!ma_container
             });
         }
+    });
+
+    // Listen for theme changes and redraw the chart with current selection
+    document.addEventListener('themeChanged', function() {
+        console.log("themeChanged event received, redrawing MA chart");
+        updateChart(currentHoursBefore);
     });
     </script>
 </main>
