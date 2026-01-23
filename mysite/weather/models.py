@@ -25,30 +25,6 @@ class ForecastData(models.Model):
     class Meta:
         verbose_name_plural = "Forecast Data"
 
-class TestForecastData(models.Model):
-    api_name = models.CharField(max_length=100)
-    city_id = models.IntegerField(blank=True, null=True)
-    city = models.CharField(max_length=100)
-    forecast_made = models.BigIntegerField()
-    forecast_epoch = models.BigIntegerField()
-    temp_f = models.DecimalField(max_digits=5, decimal_places=2)
-    feelslike_f = models.DecimalField(max_digits=5, decimal_places=2)
-    condition = models.CharField(max_length=100, null=True)
-    precip_prob = models.DecimalField(max_digits=5, decimal_places=2, null=True)
-    chance_of_rain = models.DecimalField(max_digits=5, decimal_places=2, null=True)
-    chance_of_snow = models.DecimalField(max_digits=5, decimal_places=2, null=True)
-    precip_in = models.DecimalField(max_digits=5, decimal_places=2, null=True)
-    precip_type = models.CharField(max_length=100, null=True)
-    snow_in = models.DecimalField(max_digits=5, decimal_places=2, null=True)
-    rain_in = models.DecimalField(max_digits=5, decimal_places=2, null=True)
-    sleet_in = models.DecimalField(max_digits=5, decimal_places=2, null=True)
-    will_it_rain = models.DecimalField(max_digits=5, decimal_places=2, null=True)
-
-
-
-    class Meta:
-        verbose_name_plural = "Test Forecast Data"
-
 class WeatherServices(models.Model):
     api_ref_name = models.CharField(max_length=100)
     api_display_name = models.CharField(max_length=100)
