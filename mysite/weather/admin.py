@@ -20,10 +20,7 @@ class ss(admin.ModelAdmin):
     list_display = ('name', 'stat')
 
 admin.site.register(ForecastData, fd)
-#admin.site.register(ForecastPivot, fdpivot)
 admin.site.register(WeatherServices, ws)
 admin.site.register(WeatherLocations, wl)
 admin.site.register(Locations, loc)
 admin.site.register(SiteStats, ss)
-
-#class WeatherPredictions(admin.ModelAdmin):
