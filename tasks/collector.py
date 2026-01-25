@@ -38,9 +38,6 @@ sqluser = os.environ.get('SQLUSER')
 sqlpassword = os.environ.get('SQLPASSWORD')
 sqlport = os.environ.get('SQLPORT')
 
-# 1 = send to test forecast table
-DEBUG = 0
-
 TIMEOUT = 15
 
 days = 4
@@ -244,10 +241,7 @@ def dbsend(forecastframe):
 
     cursor = conn.cursor()
     try:
-        if DEBUG == 0:
-            cursor.copy_expert("COPY weather_forecastdata(api_name, city_id, city, forecast_made, forecast_epoch, temp_f, condition, precip_in, feelslike_f, will_it_rain, chance_of_rain, chance_of_snow, precip_prob, snow_in, precip_type, rain_in, sleet_in) FROM STDIN WITH CSV HEADER", buffer)
-        elif DEBUG == 1:
-            cursor.copy_expert("COPY weather_testforecastdata(api_name, city_id, city, forecast_made, forecast_epoch, temp_f, condition, precip_in, feelslike_f, will_it_rain, chance_of_rain, chance_of_snow, precip_prob, snow_in, precip_type, rain_in, sleet_in) FROM STDIN WITH CSV HEADER", buffer)
+        cursor.copy_expert("COPY weather_forecastdata(api_name, city_id, city, forecast_made, forecast_epoch, temp_f, condition, precip_in, feelslike_f, will_it_rain, chance_of_rain, chance_of_snow, precip_prob, snow_in, precip_type, rain_in, sleet_in) FROM STDIN WITH CSV HEADER", buffer)
         conn.commit()
 
     except (Exception, psycopg2.DatabaseError) as error:
