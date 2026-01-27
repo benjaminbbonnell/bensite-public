@@ -20,8 +20,8 @@ queries = {
     "hoursbeforechart": '''
         TRUNCATE weather_hoursbeforechart RESTART IDENTITY;
 
-        INSERT INTO weather_hoursbeforechart(api_name, avg_dif, hoursbefore)
-        SELECT api_name, ROUND(AVG(ABS(currenttemp - temp_f)), 2) AS avg_dif, hoursbefore
+        INSERT INTO weather_hoursbeforechart(api_name, avg_dif, signed_dif, hoursbefore)
+        SELECT api_name, ROUND(AVG(ABS(currenttemp - temp_f)), 2) AS avg_dif, ROUND(AVG(currenttemp - temp_f), 2) AS signed_dif, hoursbefore
         FROM weather_forecastpivot
         GROUP BY api_name, hoursbefore
         ORDER BY hoursbefore, api_name;

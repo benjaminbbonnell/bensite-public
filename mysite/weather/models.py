@@ -73,6 +73,7 @@ class ForecastPivot(models.Model):
 class HoursBeforeChart(models.Model):
     api_name = models.CharField(max_length=100)
     avg_dif = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    signed_dif = models.DecimalField(max_digits=5, decimal_places=2, null=True)
     hoursbefore = models.IntegerField(null=True)
 
     class Meta:
