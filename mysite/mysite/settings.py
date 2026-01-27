@@ -179,7 +179,7 @@ STATICFILES_DIRS = [
 ]
 MEDIA_ROOT = '/home/benjaminbbonnell/mysite/media'
 MEDIA_URL = '/media/'
-STATIC_ROOT = '/home/benjaminbbonnell/mysite/static'
+#STATIC_ROOT = '/home/benjaminbbonnell/mysite/static'
 STATIC_URL = '/static/'
 
 #weather specific settings
