@@ -15,13 +15,28 @@
         <div id="hbc_container"></div>
     </div>
 
+    <div class="container">
+        <div class="row">
+            <div class="col align-self-center">
+                <p class="bs-component">
+                <button id="abs_toggle" type="button" class="btn btn-primary">ABS</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
     <script>
     let hbc_chart = null;
-    const hbc_series = {{ hbc_series|safe }};
+    let isAbsoluteMode = true;
+    const hbc_series_abs = {{ hbc_series_abs|safe }};
+    const hbc_series_signed = {{ hbc_series_signed|safe }};
     const hbc_categories = {{ hbc_categories|safe }};
 
     function renderHBCChart() {
       console.log("Rendering HBC chart...");
+      let selectedSeries = isAbsoluteMode ? hbc_series_abs : hbc_series_signed;
+      console.log("Selected series mode: " + (isAbsoluteMode ? "Absolute" : "Signed"));
+      
       if (hbc_chart) {
         hbc_chart.destroy();
       }
@@ -51,7 +66,7 @@
                 }
             }
         },
-        series: hbc_series
+        series: selectedSeries
       });
     }
 
@@ -67,13 +82,23 @@
       applyHighchartsTheme();
       renderHBCChart();
     });
+
+    const absToggleBtn = document.getElementById('abs_toggle');
+    if (absToggleBtn) {
+        absToggleBtn.addEventListener('click', function() {
+            console.log("ABS toggle button clicked");
+            isAbsoluteMode = !isAbsoluteMode;
+            renderHBCChart();
+        });
+    }
+
     </script>
 
 
     <div class="chart-container">
         <div id="ma_container"></div>
-    </div>
 
+    </div>
         <div class="dropdown-container" style="text-align: center; margin-bottom: 20px;">
         <label for="hoursDropdown">Select Hours Before:</label>
         <select id="hoursDropdown">

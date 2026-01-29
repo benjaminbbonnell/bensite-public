@@ -10,23 +10,31 @@ def index(request):
     tfc_obj = SiteStats.objects.get(name="total_forecast_count")
     total_forecast_count = "{:,}".format(int(tfc_obj.stat))
 
-    hbc_data = HoursBeforeChart.objects.values('api_name', 'avg_dif', 'hoursbefore').order_by('hoursbefore', 'api_name')
+    hbc_data = HoursBeforeChart.objects.values('api_name', 'avg_dif', 'hoursbefore', 'signed_dif').order_by('hoursbefore', 'api_name')
     ma_data = MonthlyAverageChart.objects.values('api_name', 'month', 'avg_dif', 'hoursbefore').order_by('api_name', 'month', 'hoursbefore')
     api_names = WeatherServices.objects.values_list('api_ref_name', 'api_display_name')
     api_name_dict = {item[0]: item[1] for item in api_names}
 
     #hour before chart, series is a , categories are api_name
-    hbc_series_data = {}
+    hbc_series_data_abs = {}
     for item in hbc_data:
-        if item['api_name'] not in hbc_series_data:
-            hbc_series_data[item['api_name']] = []
-        # Convert Decimal to float
+        if item['api_name'] not in hbc_series_data_abs:
+            hbc_series_data_abs[item['api_name']] = []
         avg_dif = float(item['avg_dif']) if isinstance(item['avg_dif'], Decimal) else item['avg_dif']
         if item['hoursbefore'] < 180:
-            hbc_series_data[item['api_name']].append([item['hoursbefore'], avg_dif])
+            hbc_series_data_abs[item['api_name']].append([item['hoursbefore'], avg_dif])
+
+    hbc_series_data_signed = {}
+    for item in hbc_data:
+        if item['api_name'] not in hbc_series_data_signed:
+            hbc_series_data_signed[item['api_name']] = []
+        avg_dif = float(item['signed_dif']) if isinstance(item['signed_dif'], Decimal) else item['signed_dif']
+        if item['hoursbefore'] < 180:
+            hbc_series_data_signed[item['api_name']].append([item['hoursbefore'], avg_dif])
 
     hbc_categories = sorted(set(item['hoursbefore'] for item in hbc_data))
-    hbc_series = [{'name': api_name_dict.get(api_name), 'data': hbc_series_data[api_name]} for api_name in hbc_series_data]
+    hbc_series_abs = [{'name': api_name_dict.get(api_name), 'data': hbc_series_data_abs[api_name]} for api_name in hbc_series_data_abs]
+    hbc_series_signed = [{'name': api_name_dict.get(api_name), 'data': hbc_series_data_signed[api_name]} for api_name in hbc_series_data_signed]
 
     #monthly average chart
 
@@ -60,7 +68,8 @@ def index(request):
 
 
     context = {
-        'hbc_series': hbc_series,
+        'hbc_series_abs': hbc_series_abs,
+        'hbc_series_signed': hbc_series_signed,
         'hbc_categories': hbc_categories,
         'ma_categories' : ma_categories,
         'ma_series' : ma_series,
