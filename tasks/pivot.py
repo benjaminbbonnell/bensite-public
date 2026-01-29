@@ -15,6 +15,7 @@ sqlport = os.environ.get('SQLPORT')
 
 
 # this should probably be moved to the view at some point but the processing to do it there may not be worth it
+# dividing by 3600 changes from seconds to hours in epoch time. The forecasts are normalized to the nearest hours when they're collected already so should always result in a neat number of hours
 
 queries = {
     "pivot": '''

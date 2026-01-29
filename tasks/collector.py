@@ -40,8 +40,6 @@ sqlport = os.environ.get('SQLPORT')
 
 TIMEOUT = 15
 
-days = 4
-
 current_time = round((int(time.time())) / 3600) * 3600
 
 def getlocations():
@@ -55,7 +53,9 @@ def getservices():
     return services
 
 def weathercomcollect(city_id, city, statecode, latitude, longitude, days):
-    
+    #3 day forecast
+
+
     try:
         api_url = f"http://api.weatherapi.com/v1/forecast.json?key={weatherapicom_apikey}&q={latitude},{longitude}&days={days}&aqi=no&alerts=no"
 
@@ -177,7 +177,7 @@ def tomorrowiocollect(city_id, city, statecode, latitude, longitude, days):
 
 def openmeteocollect(city_id, city, statecode, latitude, longitude, days):
     #https://open-meteo.com/en/docs
-    #no api key needed, 14 day forecast
+    #no api key needed, 16 day forecast
 
     try:
         api_url = f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,rain,snowfall&timezone=GMT&temperature_unit=fahrenheit&precipitation_unit=inch&forecast_days={days}"
@@ -268,6 +268,7 @@ def collectweather(locationlist):
 
         for service in services:
             api_name = service['api_ref_name']
+            days = int(service['days'])
 
             if index > service['hourly_api_limit']:
                 print(f"Hourly API limit reached for {api_name}.")
