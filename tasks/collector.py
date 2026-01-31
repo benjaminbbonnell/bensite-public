@@ -184,7 +184,7 @@ def openmeteocollect(city_id, city, statecode, latitude, longitude, days):
         response = requests.get(api_url, timeout=TIMEOUT)
         data = response.json()
         responsecode = response.status_code
-        #print("API url is: " + api_url)
+        print("API url is: " + api_url)
         #print("Reponse code is " + str(responsecode))
         #print(" ")
 
@@ -301,6 +301,10 @@ def collectweather(locationlist):
             combined_forecast[column] = pd.NA
 
     combined_forecast = combined_forecast[required_columns]
+
+    #clean rows with null values in required columns. Openmeteo started reporting null values in the temp_f column so this is required.
+    combined_forecast = combined_forecast.dropna(subset=['temp_f'])
+
     dbsend(combined_forecast)
 
 
