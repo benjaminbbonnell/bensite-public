@@ -2,4 +2,37 @@
 {% load static %}
 
 {% block content %}
+<!--
+<div class="card bg-primary mb-3" style="max-width: 20rem;">
+  <div class="card-header">Header</div>
+  <div class="card-body">
+    <h4 class="card-title">Weather</h4>
+    <p class="card-text">Collects, pivots, and analyzes 14000 forecasts each day.</p>
+  </div>
+</div>
+-->
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-6">
+      <div class="card bg-secondary text-center text-dark" style="min-height: 300px; display: flex; flex-direction: column; justify-content: center;">
+        <div class="card-body text-center">
+          <h5 class="card-title">Weather</h5>
+          <p class="card-text">Analyzes forecast accuracy across multiple weather APIs. Visualizes prediction performance metrics and monthly trends to identify the most reliable forecasts.</p>
+          <a href="{% url 'weather:index' %}" class="btn btn-primary">Take me there</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card bg-secondary mb-3 text-dark" style="min-height: 300px; display: flex; flex-direction: column; justify-content: center;">
+        <div class="card-body text-center">
+          <h5 class="card-title">Weather API</h5>
+          <p class="card-text">RESTful API providing access to weather forecast accuracy data. Query forecast performance by API provider and time range with comprehensive filtering options.</p>
+          <a href="{% url 'weather:swagger-ui' %}" class="btn btn-primary">Take me there</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 {% endblock %}

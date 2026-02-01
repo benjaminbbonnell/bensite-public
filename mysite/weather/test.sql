@@ -42,43 +42,61 @@ GROUP BY api_name, diff_category;
 
 
 
-WITH current AS (
-    SELECT
-        MAX(forecast_made) AS current
-    FROM weather_forecastdata
-    ),
-    currenttemps AS (
-        SELECT
-	        city_id,
-	        api_name,
-	        temp_f AS currenttemp
-        FROM weather_forecastdata
-        WHERE forecast_made = (SELECT current FROM current) AND forecast_epoch = (SELECT current FROM current)
-    ),
-    forecast_data AS (
-        SELECT
-            city,
-            city_id,
-            api_name,
-            forecast_made,
-            forecast_epoch,
-            temp_f,
-            (current - forecast_made) / 3600 AS hoursbefore
-        FROM weather_forecastdata, current
-    )
 
-    INSERT INTO weather_forecastpivot(api_name, city_name, city_id, forecast_made, forecast_epoch, currenttemp, temp_f, hoursbefore)
 
-    SELECT
-        'ensemble' AS api_name,
-        forecast_data.city AS city_name,
-	    forecast_data.city_id,
-        forecast_made,
+WITH observations AS (
+    SELECT 
+        city,
         forecast_epoch,
-        ROUND(AVG(currenttemps.currenttemp), 2),
-        ROUND(avg(forecast_data.temp_f), 2),
-        forecast_data.hoursbefore
-        FROM forecast_data
-        JOIN currenttemps ON forecast_data.city_id = currenttemps.city_id AND forecast_data.api_name = currenttemps.api_name
-        WHERE forecast_data.forecast_epoch = (SELECT current FROM current) AND hoursbefore < 72
-        GROUP BY forecast_data.city, forecast_data.city_id, forecast_made, forecast_epoch, forecast_data.hoursbefore;
+        precip_in AS actual_precip,
+        CASE 
+            WHEN precip_in > 0 THEN 1 
+            ELSE 0 
+        END AS it_rained
+    FROM weather_forecastdata
+    WHERE forecast_epoch = forecast_made 
+        AND api_name = 'openmeteo'
+),
+forecasts_with_obs AS (
+    SELECT 
+        f.city,
+        f.forecast_epoch,
+        f.precip_prob,
+        f.precip_in AS forecasted_precip,
+        FLOOR(EXTRACT(EPOCH FROM (to_timestamp(f.forecast_epoch) - to_timestamp(f.forecast_made)))/3600) AS hours_before,
+        o.actual_precip,
+        o.it_rained,
+        CASE
+            WHEN f.precip_prob < 10 THEN '0-10%'
+            WHEN f.precip_prob < 20 THEN '10-20%'
+            WHEN f.precip_prob < 30 THEN '20-30%'
+            WHEN f.precip_prob < 50 THEN '30-50%'
+            WHEN f.precip_prob < 70 THEN '50-70%'
+            ELSE '70%+'
+        END AS prob_bucket
+    FROM weather_forecastdata f
+    INNER JOIN observations o 
+        ON f.city = o.city 
+        AND f.forecast_epoch = o.forecast_epoch
+    WHERE f.api_name = 'openmeteo'
+        AND f.forecast_epoch > f.forecast_made
+)
+SELECT 
+    hours_before,
+    prob_bucket,
+    COUNT(*) AS total_forecasts,
+    SUM(it_rained) AS actual_rain_count,
+    ROUND(100.0 * SUM(it_rained) / COUNT(*), 2) AS actual_rain_percent,
+    ROUND(AVG(precip_prob), 2) AS avg_predicted_prob,
+    ROUND(100.0 * SUM(it_rained) / COUNT(*) - AVG(precip_prob), 2) AS wet_bias_percent,
+    ROUND(AVG(actual_precip), 2) AS avg_actual_precip_in
+FROM forecasts_with_obs
+GROUP BY hours_before, prob_bucket
+ORDER BY hours_before DESC,
+    CASE WHEN prob_bucket = '0-10%' THEN 1
+         WHEN prob_bucket = '10-20%' THEN 2
+         WHEN prob_bucket = '20-30%' THEN 3
+         WHEN prob_bucket = '30-50%' THEN 4
+         WHEN prob_bucket = '50-70%' THEN 5
+         ELSE 6
+    END;

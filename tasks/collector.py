@@ -184,7 +184,7 @@ def openmeteocollect(city_id, city, statecode, latitude, longitude, days):
         response = requests.get(api_url, timeout=TIMEOUT)
         data = response.json()
         responsecode = response.status_code
-        print("API url is: " + api_url)
+        #print("API url is: " + api_url)
         #print("Reponse code is " + str(responsecode))
         #print(" ")
 
