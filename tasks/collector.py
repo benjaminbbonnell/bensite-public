@@ -89,8 +89,8 @@ def weathercomcollect(city_id, city, statecode, latitude, longitude, days):
         df = pd.DataFrame(forecasts)
         return df
     except Exception as e:
-        print(f"could not collect weather forecast")
-        print(f"api url is{api_url}")
+        print(f"could not collect weather forecast at {city}, {statecode}")
+        print(f"api url is {api_url}")
         print(f"error is {e}")
 
 def visualcrossingcollect(city_id, city, statecode, latitude, longitude, days):
@@ -129,8 +129,8 @@ def visualcrossingcollect(city_id, city, statecode, latitude, longitude, days):
         df = pd.DataFrame(forecasts)
         return df
     except Exception as e:
-        print(f"could not collect weather forecast")
-        print(f"api url is{api_url}")
+        print(f"could not collect weather forecast at {city}, {statecode}")
+        print(f"api url is {api_url}")
         print(f"error is {e}")
 
 def tomorrowiocollect(city_id, city, statecode, latitude, longitude, days):
@@ -171,8 +171,8 @@ def tomorrowiocollect(city_id, city, statecode, latitude, longitude, days):
         df = pd.DataFrame(forecasts)
         return df
     except Exception as e:
-        print(f"could not collect weather forecast")
-        print(f"api url is{api_url}")
+        print(f"could not collect weather forecast at {city}, {statecode}")
+        print(f"api url is {api_url}")
         print(f"error is {e}")
 
 def openmeteocollect(city_id, city, statecode, latitude, longitude, days):
@@ -221,8 +221,8 @@ def openmeteocollect(city_id, city, statecode, latitude, longitude, days):
         df = pd.DataFrame(dfdata)
         return(df)
     except Exception as e:
-        print(f"could not collect weather forecast")
-        print(f"api url is{api_url}")
+        print(f"could not collect weather forecast at {city}, {statecode}")
+        print(f"api url is {api_url}")
         print(f"error is {e}")
 
 #https://naysan.ca/2020/05/09/pandas-to-postgresql-using-psycopg2-bulk-insert-performance-benchmark/
