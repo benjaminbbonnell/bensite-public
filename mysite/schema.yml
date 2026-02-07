@@ -4,9 +4,9 @@ info:
   version: 0.2.0
   description: A collection of APIs to get data from benjaminbbonnell.com/weather/api
 paths:
-  /weather/api/hbc/:
+  /weather/api/hb/:
     get:
-      operationId: get_hours_before_chart
+      operationId: get_hours_before
       description: Retrieve weather forecast accuracy data grouped by API name and
         hours before forecast.
       parameters:
@@ -38,16 +38,16 @@ paths:
         description: Filter results to forecasts with hours less than or equal to
           this value.
         examples:
+          All:
+            value: ''
           24Hours:
             value: 24
             summary: 24 hours
           72Hours:
             value: 72
             summary: 72 hours
-          None:
-            value: ''
       tags:
-      - Weather API
+      - Weather Analysis
       security:
       - {}
       responses:
@@ -55,9 +55,143 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
+                type: array
+                items:
+                  $ref: '#/components/schemas/HoursBeforeResponse'
+              examples:
+                SuccessfulExampleOfHoursBeforeData:
+                  value:
+                  - - api_name: openmeteo
+                      hours_before:
+                        '0': 0
+                        '1': 0.89
+                        '2': 1.08
+                        '3': 1.22
+                        '4': 1.34
+                        '5': 1.44
+                  summary: Successful Example of Hours Before Data
+          description: ''
+  /weather/api/locations/:
+    get:
+      operationId: get_location_list
+      description: Retrieve a list of locations with their ID, name, state, country,
+        latitude, and longitude.
+      tags:
+      - Forecasts
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LocationResponse'
+              examples:
+                SuccessfulExampleOfLocationData:
+                  value:
+                  - - city_id: 1
+                      city_name: Washington
+                      state_code: DC
+                      country_code: USA
+                      latitude: 38.9072
+                      longitude: -77.0369
+                    - city_id: 2
+                      city_name: Dallas
+                      state_code: TX
+                      country_code: USA
+                      latitude: 32.7767
+                      longitude: -96.797
+                  summary: Successful Example of Location Data
+          description: ''
+  /weather/api/ma/:
+    get:
+      operationId: get_monthly_average
+      description: Retrieve weather forecast accuracy data grouped by API name, month,
+        and hours before forecast.
+      parameters:
+      - in: query
+        name: api_name
+        schema:
+          type: array
+          items:
+            type: string
+        description: 'Filter results by API name(s). Use multiple times for multiple
+          values: ?api_name=openmeteo&api_name=tomorrowio'
+        explode: true
+        style: form
+        examples:
+          All:
+            value: ''
+          OpenMeteoOnly:
+            value: openmeteo
+            summary: OpenMeteo only
+          OpenMeteoAndTomorrowIO:
+            value:
+            - openmeteo
+            - tomorrowio
+            summary: OpenMeteo and TomorrowIO
+      - in: query
+        name: hoursbefore
+        schema:
+          type: integer
+        description: Filter results to forecasts with hours less than or equal to
+          this value.
+        examples:
+          All:
+            value: ''
+          1Hour:
+            value: 1
+            summary: 1 hour
+          12Hours:
+            value: 12
+            summary: 12 hours
+      - in: query
+        name: month
+        schema:
+          type: array
+          items:
+            type: string
+        description: 'Filter results by month integer. Use multiple times for multiple
+          values: ?month=1&month=4'
+        explode: true
+        style: form
+        examples:
+          All:
+            value: ''
+          November:
+            value: '11'
+          December:
+            value: '12'
+      tags:
+      - Weather Analysis
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MonthlyAverageResponse'
+              examples:
+                SuccessfulExampleOfMonthlyAverageData:
+                  value:
+                  - - api_name: openmeteo
+                      months:
+                        January:
+                          '1': 0.63
+                          '6': 1.49
+                          '12': 1.87
+                          '24': 2.24
+                        February:
+                          '1': 0.71
+                          '6': 1.76
+                          '12': 2.28
+                          '24': 3.08
+                  summary: Successful Example of Monthly Average Data
           description: ''
   /weather/api/schema/:
     get:
@@ -172,6 +306,7 @@ paths:
           - tr
           - tt
           - udm
+          - ug
           - uk
           - ur
           - uz
@@ -200,4 +335,51 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-components: {}
+components:
+  schemas:
+    HoursBeforeResponse:
+      type: object
+      properties:
+        api_name:
+          type: string
+        hours_before:
+          type: object
+          additionalProperties: {}
+      required:
+      - api_name
+      - hours_before
+    LocationResponse:
+      type: object
+      properties:
+        city_id:
+          type: integer
+        city_name:
+          type: string
+        state_code:
+          type: string
+        country_code:
+          type: string
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+      required:
+      - city_id
+      - city_name
+      - country_code
+      - latitude
+      - longitude
+      - state_code
+    MonthlyAverageResponse:
+      type: object
+      properties:
+        api_name:
+          type: string
+        months:
+          type: object
+          additionalProperties: {}
+      required:
+      - api_name
+      - months

@@ -148,6 +148,9 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '0.2.0',
     'SERVE_INCLUDE_SCHEMA': True,
     'SERVE_PERMISSIONS': [],
+    'SWAGGER_UI_SETTINGS': {
+        'defaultModelsExpandDepth': -1,
+    },
 }
 
 # Internationalization

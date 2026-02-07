@@ -13,7 +13,6 @@ urlpatterns = [
     path('api/ma/', MAView.as_view(), name='Monthly Average'),
     path('api/locations/', LocationList.as_view(), name='Location List'),
     path('api/schema/', csrf_exempt(SpectacularAPIView.as_view()), name='schema'),
-    # Optional UI:
     path('api/', csrf_exempt(SpectacularSwaggerView.as_view(url_name='weather:schema')), name='swagger-ui'),
     path('api/redoc/', csrf_exempt(SpectacularRedocView.as_view(url_name='weather:schema')), name='redoc'),
 ]

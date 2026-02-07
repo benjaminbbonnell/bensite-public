@@ -1,60 +1,102 @@
-from rest_framework import status
+from rest_framework import status, serializers
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, extend_schema_serializer
 from drf_spectacular.types import OpenApiTypes
 from ..models import HoursBeforeChart, MonthlyAverageChart, Locations
 import calendar
 
 
-@extend_schema(
-    operation_id="get_hours_before",
-    description="Retrieve weather forecast accuracy data grouped by API name and hours before forecast.",
-    parameters=[
-        OpenApiParameter(
-            name="api_name",
-            description="Filter results by API name(s). Use multiple times for multiple values: ?api_name=openmeteo&api_name=tomorrowio",
-            required=False,
-            type=OpenApiTypes.STR,
-            style='form',
-            explode=True,
-            many=True,
-            examples=[
-                OpenApiExample(name="All", value=""),
-                OpenApiExample(name="OpenMeteo only", value="openmeteo"),
-                OpenApiExample(name="OpenMeteo and TomorrowIO", value=["openmeteo", "tomorrowio"]),
-            ],
-        ),
-        OpenApiParameter(
-            name="hoursbefore",
-            description="Filter results to forecasts with hours less than or equal to this value.",
-            required=False,
-            type=OpenApiTypes.INT,
-            examples=[
-                OpenApiExample(name="All", value=""),
-                OpenApiExample(name="24 hours", value=24),
-                OpenApiExample(name="72 hours", value=72),
-            ],
-        ),
-    ],
-    responses={
-        200: OpenApiExample(
+@extend_schema_serializer(
+    examples=[
+        OpenApiExample(
             "Successful Example of Hours Before Data",
             value=[
                 {
                     "api_name": "openmeteo",
                     "hours_before": {
-                        "0": 0.5,
-                        "1": 1.2,
-                        "24": 2.5,
+                        "0": 0,
+                        "1": 0.89,
+                        "2": 1.08,
+                        "3": 1.22,
+                        "4": 1.34,
+                        "5": 1.44
                     },
                 }
             ],
         )
-    },
-    tags=["Weather Analysis"],
+    ]
 )
+class HoursBeforeResponseSerializer(serializers.Serializer):
+    api_name = serializers.CharField()
+    hours_before = serializers.DictField()
+
+
+@extend_schema_serializer(
+    examples=[
+        OpenApiExample(
+            "Successful Example of Monthly Average Data",
+            value=[
+                {
+                    "api_name": "openmeteo",
+                    "months": {
+                        "January": {
+                            "1": 0.63,
+                            "6": 1.49,
+                            "12": 1.87,
+                            "24": 2.24
+                        },
+                        "February": {
+                            "1": 0.71,
+                            "6": 1.76,
+                            "12": 2.28,
+                            "24": 3.08
+                        }
+                    },
+                }
+            ],
+        )
+    ]
+)
+class MonthlyAverageResponseSerializer(serializers.Serializer):
+    api_name = serializers.CharField()
+    months = serializers.DictField()
+
+
+@extend_schema_serializer(
+    examples=[
+        OpenApiExample(
+            "Successful Example of Location Data",
+            value=[
+                {
+                    "city_id": 1,
+                    "city_name": "Washington",
+                    "state_code": "DC",
+                    "country_code": "USA",
+                    "latitude": 38.9072,
+                    "longitude": -77.0369
+                },
+                {
+                    "city_id": 2,
+                    "city_name": "Dallas",
+                    "state_code": "TX",
+                    "country_code": "USA",
+                    "latitude": 32.7767,
+                    "longitude": -96.797
+                },
+            ],
+        )
+    ]
+)
+class LocationResponseSerializer(serializers.Serializer):
+    city_id = serializers.IntegerField()
+    city_name = serializers.CharField()
+    state_code = serializers.CharField()
+    country_code = serializers.CharField()
+    latitude = serializers.FloatField()
+    longitude = serializers.FloatField()
+
 class HBView(APIView):
     authentication_classes = []
     permission_classes = [AllowAny]
@@ -62,6 +104,39 @@ class HBView(APIView):
     def get_view_name(self):
         return "Hours Before"
 
+    @extend_schema(
+        operation_id="get_hours_before",
+        description="Retrieve weather forecast accuracy data grouped by API name and hours before forecast.",
+        parameters=[
+            OpenApiParameter(
+                name="api_name",
+                description="Filter results by API name(s). Use multiple times for multiple values: ?api_name=openmeteo&api_name=tomorrowio",
+                required=False,
+                type=OpenApiTypes.STR,
+                style='form',
+                explode=True,
+                many=True,
+                examples=[
+                    OpenApiExample(name="All", value=""),
+                    OpenApiExample(name="OpenMeteo only", value="openmeteo"),
+                    OpenApiExample(name="OpenMeteo and TomorrowIO", value=["openmeteo", "tomorrowio"]),
+                ],
+            ),
+            OpenApiParameter(
+                name="hoursbefore",
+                description="Filter results to forecasts with hours less than or equal to this value.",
+                required=False,
+                type=OpenApiTypes.INT,
+                examples=[
+                    OpenApiExample(name="All", value=""),
+                    OpenApiExample(name="24 hours", value=24),
+                    OpenApiExample(name="72 hours", value=72),
+                ],
+            ),
+        ],
+        responses=HoursBeforeResponseSerializer(many=True),
+        tags=["Weather Analysis"],
+    )
     def get(self, request):
 
         rows = HoursBeforeChart.objects.values("api_name", "hoursbefore", "avg_dif")
@@ -92,78 +167,6 @@ class HBView(APIView):
 
         return Response(response_list)
 
-
-
-@extend_schema(
-    operation_id="get_monthly_average",
-    description="Retrieve weather forecast accuracy data grouped by API name, month, and hours before forecast.",
-    parameters=[
-        OpenApiParameter(
-            name="api_name",
-            description="Filter results by API name(s). Use multiple times for multiple values: ?api_name=openmeteo&api_name=tomorrowio",
-            required=False,
-            type=OpenApiTypes.STR,
-            style='form',
-            explode=True,
-            many=True,
-            examples=[
-                OpenApiExample(name="All", value=""),
-                OpenApiExample(name="OpenMeteo only", value="openmeteo"),
-                OpenApiExample(name="OpenMeteo and TomorrowIO", value=["openmeteo", "tomorrowio"]),
-            ],
-        ),
-        OpenApiParameter(
-            name="hoursbefore",
-            description="Filter results to forecasts with hours less than or equal to this value.",
-            required=False,
-            type=OpenApiTypes.INT,
-            examples=[
-                OpenApiExample(name="All", value=""),
-                OpenApiExample(name="1 hour", value=1),
-                OpenApiExample(name="12 hours", value=12),
-            ],
-        ),
-        OpenApiParameter(
-            name="month",
-            description="Filter results by month integer. Use multiple times for multiple values: ?month=1&month=4",
-            required=False,
-            type=OpenApiTypes.STR,
-            style='form',
-            explode=True,
-            many=True,
-            examples=[
-                OpenApiExample(name="All", value=""),
-                OpenApiExample(name="November", value="11"),
-                OpenApiExample(name="December", value="12"),
-            ],
-        ),
-    ],
-    responses={
-        200: OpenApiExample(
-            "Successful Example of Monthly Average Data",
-            value=[
-                {
-                    "api_name": "openmeteo",
-                    "months": {
-                        "January": {
-                            "1": 0.51,
-                            "6": 1.37,
-                            "12": 1.62,
-                            "24": 2.09,
-                        },
-                        "February": {
-                            "1": 0.51,
-                            "6": 1.37,
-                            "12": 1.62,
-                            "24": 2.09,
-                        }
-                    },
-                }
-            ],
-        )
-    },
-    tags=["Weather Analysis"],
-)
 class MAView(APIView):
     authentication_classes =[]
     permission_classes = [AllowAny]
@@ -171,6 +174,53 @@ class MAView(APIView):
     def get_view_name(self):
         return "Monthly Averages"
 
+    @extend_schema(
+        operation_id="get_monthly_average",
+        description="Retrieve weather forecast accuracy data grouped by API name, month, and hours before forecast.",
+        parameters=[
+            OpenApiParameter(
+                name="api_name",
+                description="Filter results by API name(s). Use multiple times for multiple values: ?api_name=openmeteo&api_name=tomorrowio",
+                required=False,
+                type=OpenApiTypes.STR,
+                style='form',
+                explode=True,
+                many=True,
+                examples=[
+                    OpenApiExample(name="All", value=""),
+                    OpenApiExample(name="OpenMeteo only", value="openmeteo"),
+                    OpenApiExample(name="OpenMeteo and TomorrowIO", value=["openmeteo", "tomorrowio"]),
+                ],
+            ),
+            OpenApiParameter(
+                name="hoursbefore",
+                description="Filter results to forecasts with hours less than or equal to this value.",
+                required=False,
+                type=OpenApiTypes.INT,
+                examples=[
+                    OpenApiExample(name="All", value=""),
+                    OpenApiExample(name="1 hour", value=1),
+                    OpenApiExample(name="12 hours", value=12),
+                ],
+            ),
+            OpenApiParameter(
+                name="month",
+                description="Filter results by month integer. Use multiple times for multiple values: ?month=1&month=4",
+                required=False,
+                type=OpenApiTypes.STR,
+                style='form',
+                explode=True,
+                many=True,
+                examples=[
+                    OpenApiExample(name="All", value=""),
+                    OpenApiExample(name="November", value="11"),
+                    OpenApiExample(name="December", value="12"),
+                ],
+            ),
+        ],
+        responses=MonthlyAverageResponseSerializer(many=True),
+        tags=["Weather Analysis"],
+    )
     def get(self, request):
         rows = MonthlyAverageChart.objects.values("api_name", "month", "avg_dif", "hoursbefore")
 
@@ -235,35 +285,6 @@ class MAView(APIView):
 
         return Response(response_list)
 
-
-@extend_schema(
-    operation_id="get_location_list",
-    description="Retrieve a list of locations with their ID, name, state, country, latitude, and longitude.",
-    responses={
-        200: OpenApiExample(
-            "Successful Example of Location Data",
-            value=[
-                {
-                    "city_id": 1,
-                    "city_name": "Washington",
-                    "state_code": "DC",
-                    "country_code": "USA",
-                    "latitude": 38.9072,
-                    "longitude": -77.0369
-                },
-                {
-                    "city_id": 2,
-                    "city_name": "Dallas",
-                    "state_code": "TX",
-                    "country_code": "USA",
-                    "latitude": 32.7767,
-                    "longitude": -96.797
-                },
-            ],
-        )
-    },
-    tags=["Forecasts"],
-)
 class LocationList(APIView):
     authentication_classes = []
     permission_classes = [AllowAny]
@@ -271,6 +292,12 @@ class LocationList(APIView):
     def get_view_name(self):
         return "Location List"
 
+    @extend_schema(
+        operation_id="get_location_list",
+        description="Retrieve a list of locations with their ID, name, state, country, latitude, and longitude.",
+        responses=LocationResponseSerializer(many=True),
+        tags=["Forecasts"],
+    )
     def get(self, request):
         rows = Locations.objects.values("city_id", "city_name", "state_code", "country_code", "latitude", "longitude").order_by("city_id")
 
@@ -288,14 +315,3 @@ class LocationList(APIView):
             response_list.append(response_dict)
 
         return Response(response_list)
-
-
-
-
-
-
-
-
-
-
-
