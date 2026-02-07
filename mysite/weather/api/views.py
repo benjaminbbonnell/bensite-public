@@ -53,7 +53,7 @@ import calendar
             ],
         )
     },
-    tags=["Hours Before"],
+    tags=["Weather Analysis"],
 )
 class HBView(APIView):
     authentication_classes = []
@@ -162,7 +162,7 @@ class HBView(APIView):
             ],
         )
     },
-    tags=["Monthly Averages"],
+    tags=["Weather Analysis"],
 )
 class MAView(APIView):
     authentication_classes =[]
@@ -262,7 +262,7 @@ class MAView(APIView):
             ],
         )
     },
-    tags=["Locations"],
+    tags=["Forecasts"],
 )
 class LocationList(APIView):
     authentication_classes = []
@@ -272,7 +272,7 @@ class LocationList(APIView):
         return "Location List"
 
     def get(self, request):
-        rows = Locations.objects.values("city_id", "city_name", "state_code", "country_code", "latitude", "longitude")
+        rows = Locations.objects.values("city_id", "city_name", "state_code", "country_code", "latitude", "longitude").order_by("city_id")
 
         response_list = []
 
