@@ -15,7 +15,6 @@ import pytz
 import django
 from django.db import connection
 
-# Setup Django
 project_root = Path(__file__).resolve().parent.parent / 'mysite'
 sys.path.insert(0, str(project_root))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
@@ -23,7 +22,6 @@ django.setup()
 
 from weather.models import WeatherServices, Locations
 
-#don't know why the WSGI file isn't working but whatever
 project_folder = os.path.expanduser('~/mysite/.env')
 load_dotenv(project_folder)
 
@@ -64,7 +62,6 @@ def weathercomcollect(city_id, city, statecode, latitude, longitude, days):
         responsecode = response.status_code
 
         #print("API url is: " + api_url)
-        #print("Reponse code is " + str(responsecode))
 
         forecasts = []
 
@@ -82,7 +79,7 @@ def weathercomcollect(city_id, city, statecode, latitude, longitude, days):
                     'feelslike_f': hour['feelslike_f'],
                     'will_it_rain': hour['will_it_rain'],
                     'chance_of_rain': hour['chance_of_rain'],
-                    'chance_of_snow': hour['chance_of_snow']
+                    'chance_of_snow': hour['chance_of_snow'],
                 }
                 forecasts.append(forecast)
 
@@ -91,6 +88,7 @@ def weathercomcollect(city_id, city, statecode, latitude, longitude, days):
     except Exception as e:
         print(f"could not collect weather forecast at {city}, {statecode}")
         print(f"api url is {api_url}")
+        print(f"reponse code is {responsecode}")
         print(f"error is {e}")
 
 def visualcrossingcollect(city_id, city, statecode, latitude, longitude, days):
@@ -101,7 +99,6 @@ def visualcrossingcollect(city_id, city, statecode, latitude, longitude, days):
         responsecode = response.status_code
 
         #print("API url is: " + api_url)
-        #print("Reponse code is " + str(responsecode))
 
         forecasts = []
 
@@ -131,6 +128,7 @@ def visualcrossingcollect(city_id, city, statecode, latitude, longitude, days):
     except Exception as e:
         print(f"could not collect weather forecast at {city}, {statecode}")
         print(f"api url is {api_url}")
+        print(f"reponse code is {responsecode}")
         print(f"error is {e}")
 
 def tomorrowiocollect(city_id, city, statecode, latitude, longitude, days):
@@ -143,7 +141,6 @@ def tomorrowiocollect(city_id, city, statecode, latitude, longitude, days):
         responsecode = response.status_code
 
         #print("API url is: " + api_url)
-        #print("Reponse code is " + str(responsecode))
 
         forecasts = []
 
@@ -163,8 +160,9 @@ def tomorrowiocollect(city_id, city, statecode, latitude, longitude, days):
                 'condition': hour['values']['weatherCode'],
                 'snow_in': hour['values']['snowAccumulation'],
                 'rain_in': hour['values']['rainAccumulation'],
-    #           'sleet_in': hour['values']['sleetAccumulation'], - API is not returning this right now. Not sure why.
+                #'sleet_in': hour['values']['sleetAccumulation'],
                 'precip_prob': hour['values']['precipitationProbability'],
+                'precip_in': hour['values']['snowAccumulation'] + hour['values']['rainAccumulation'],
             }
             forecasts.append(forecast)
 
@@ -173,6 +171,7 @@ def tomorrowiocollect(city_id, city, statecode, latitude, longitude, days):
     except Exception as e:
         print(f"could not collect weather forecast at {city}, {statecode}")
         print(f"api url is {api_url}")
+        print(f"reponse code is {responsecode}")
         print(f"error is {e}")
 
 def openmeteocollect(city_id, city, statecode, latitude, longitude, days):
@@ -184,9 +183,8 @@ def openmeteocollect(city_id, city, statecode, latitude, longitude, days):
         response = requests.get(api_url, timeout=TIMEOUT)
         data = response.json()
         responsecode = response.status_code
+        
         #print("API url is: " + api_url)
-        #print("Reponse code is " + str(responsecode))
-        #print(" ")
 
 
         time_list = data['hourly']['time']
@@ -223,6 +221,7 @@ def openmeteocollect(city_id, city, statecode, latitude, longitude, days):
     except Exception as e:
         print(f"could not collect weather forecast at {city}, {statecode}")
         print(f"api url is {api_url}")
+        print(f"reponse code is {responsecode}")
         print(f"error is {e}")
 
 #https://naysan.ca/2020/05/09/pandas-to-postgresql-using-psycopg2-bulk-insert-performance-benchmark/

@@ -66,6 +66,10 @@ class ForecastPivot(models.Model):
     currenttemp = models.DecimalField(max_digits=5, decimal_places=2, null=True)
     temp_f = models.DecimalField(max_digits=5, decimal_places=2, null=True)
     hoursbefore = models.IntegerField(null=True)
+    forecasted_precip_in = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    forecasted_precip_prob = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    actual_precip_in = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    actual_precip_prob = models.DecimalField(max_digits=5, decimal_places=2, null=True)
 
     class Meta:
         verbose_name_plural = "Forecast Pivot"
