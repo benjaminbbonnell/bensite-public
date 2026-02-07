@@ -1,3 +1,3 @@
-from .views import HBView, MAView
+from .views import HBView, MAView, LocationList
 
-__all__ = ['HBView', 'MAView']
+__all__ = ['HBView', 'MAView', 'LocationList']

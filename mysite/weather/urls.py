@@ -1,8 +1,8 @@
 from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 from . import views
-from .api import HBView, MAView
-from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView, LocationList
+from .api import HBView, MAView, LocationList
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 app_name = 'weather'
 
