@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
 from drf_spectacular.types import OpenApiTypes
-from ..models import HoursBeforeChart, MonthlyAverageChart
+from ..models import HoursBeforeChart, MonthlyAverageChart, Locations
 import calendar
 
 
@@ -64,7 +64,7 @@ class HBView(APIView):
 
     def get(self, request):
 
-        rows = HoursBeforeChart.objects.values('api_name', 'hoursbefore', 'avg_dif')
+        rows = HoursBeforeChart.objects.values("api_name", "hoursbefore", "avg_dif")
 
         hb_param = self.request.query_params.get("hoursbefore")
         if hb_param is not None:
@@ -172,7 +172,7 @@ class MAView(APIView):
         return "Monthly Averages"
 
     def get(self, request):
-        rows = MonthlyAverageChart.objects.values('api_name', 'month', 'avg_dif', 'hoursbefore')
+        rows = MonthlyAverageChart.objects.values("api_name", "month", "avg_dif", "hoursbefore")
 
         # hours before must be an integer
         hb_param = self.request.query_params.get("hoursbefore")
@@ -234,6 +234,31 @@ class MAView(APIView):
                     response["months"][month_name][hoursbefore] = avg_dif
 
         return Response(response_list)
+    
+class LocationList(APIView):
+    authentication_classes =[]
+    permission_classes = [AllowAny]
+
+    def get_view_name(self):
+        return "Location List"
+
+    def get(self, request):
+        rows = Locations.objects.values("city_id", "city_name", "state_code", "country_code", "latitude", "longitude")
+
+        response_list = []
+
+        for r in rows:
+            response_dict = {}
+            response_dict["city_id"] = r["city_id"]
+            response_dict["city_name"] = r["city_name"]
+            response_dict["state_code"] = r["state_code"]
+            response_dict["country_code"] = r["country_code"]
+            response_dict["latitude"] = r["latitude"]
+            response_dict["longitude"] = r["longitude"]
+            response_list.append(response_dict)
+        
+        return Response(response_list)
+
 
 
 

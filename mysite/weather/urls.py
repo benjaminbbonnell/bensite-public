@@ -2,7 +2,7 @@ from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 from . import views
 from .api import HBView, MAView
-from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView, LocationList
 
 app_name = 'weather'
 
@@ -11,6 +11,7 @@ urlpatterns = [
     path('redirect-to-bensite-index/', views.redirect_to_bensite_index, name='redirect_to_bensite_index'),
     path('api/hb/', HBView.as_view(), name='Hours Before'),
     path('api/ma/', MAView.as_view(), name='Monthly Average'),
+    path('api/locations/', LocationList.as_view(), name='Location List'),
     path('api/schema/', csrf_exempt(SpectacularAPIView.as_view()), name='schema'),
     # Optional UI:
     path('api/', csrf_exempt(SpectacularSwaggerView.as_view(url_name='weather:schema')), name='swagger-ui'),
