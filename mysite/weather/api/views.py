@@ -234,9 +234,38 @@ class MAView(APIView):
                     response["months"][month_name][hoursbefore] = avg_dif
 
         return Response(response_list)
-    
+
+
+@extend_schema(
+    operation_id="get_location_list",
+    description="Retrieve a list of locations with their ID, name, state, country, latitude, and longitude.",
+    responses={
+        200: OpenApiExample(
+            "Successful Example of Location Data",
+            value=[
+                {
+                    "city_id": 1,
+                    "city_name": "Washington",
+                    "state_code": "DC",
+                    "country_code": "USA",
+                    "latitude": 38.9072,
+                    "longitude": -77.0369
+                },
+                {
+                    "city_id": 2,
+                    "city_name": "Dallas",
+                    "state_code": "TX",
+                    "country_code": "USA",
+                    "latitude": 32.7767,
+                    "longitude": -96.797
+                },
+            ],
+        )
+    },
+    tags=["Locations"],
+)
 class LocationList(APIView):
-    authentication_classes =[]
+    authentication_classes = []
     permission_classes = [AllowAny]
 
     def get_view_name(self):
@@ -248,15 +277,16 @@ class LocationList(APIView):
         response_list = []
 
         for r in rows:
-            response_dict = {}
-            response_dict["city_id"] = r["city_id"]
-            response_dict["city_name"] = r["city_name"]
-            response_dict["state_code"] = r["state_code"]
-            response_dict["country_code"] = r["country_code"]
-            response_dict["latitude"] = r["latitude"]
-            response_dict["longitude"] = r["longitude"]
+            response_dict = {
+                "city_id": r["city_id"],
+                "city_name": r["city_name"],
+                "state_code": r["state_code"],
+                "country_code": r["country_code"],
+                "latitude": r["latitude"],
+                "longitude": r["longitude"],
+            }
             response_list.append(response_dict)
-        
+
         return Response(response_list)
 
 
