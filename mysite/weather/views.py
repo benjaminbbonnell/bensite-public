@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import HoursBeforeChart, WeatherServices, SiteStats, MonthlyAverageChart
 from decimal import Decimal
+from num2words import num2words
 import calendar
 
 # Create your views here.
@@ -66,6 +67,10 @@ def index(request):
         for api_name, data in ma_series_data.items()
     ]
 
+    api_count = SiteStats.objects.get(name="total_api_count").stat
+    api_count_formatted = num2words(api_count, lang='en')
+
+    location_count = int(SiteStats.objects.get(name="total_location_count").stat)
 
     context = {
         'hbc_series_abs': hbc_series_abs,
@@ -73,7 +78,9 @@ def index(request):
         'hbc_categories': hbc_categories,
         'ma_categories' : ma_categories,
         'ma_series' : ma_series,
-        'forecastcount': total_forecast_count
+        'forecastcount': total_forecast_count,
+        'api_count': api_count_formatted,
+        'location_count': location_count
     }
     return render(request, 'weather/weather.html', context)
 

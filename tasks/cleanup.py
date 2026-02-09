@@ -14,7 +14,7 @@ sys.path.insert(0, str(project_root))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
 django.setup()
 
-from weather.models import ForecastPivot, SiteStats
+from weather.models import ForecastPivot, SiteStats, WeatherServices, Locations
 
 sqldbname = os.environ.get('SQLDBNAME')
 sqlhost = os.environ.get('SQLHOST')
@@ -28,14 +28,12 @@ threshold_epoch = current_time - (threshold_setting * 86400)
 
 
 def total_forecasts():
-    total_forecast_count = ForecastPivot.objects.count()
-    countdata = {'stat': total_forecast_count}
-
+    total_forecast_count = {'stat' : ForecastPivot.objects.count()}
     try:
         with transaction.atomic():
             SiteStats.objects.update_or_create(
                 name='total_forecast_count',
-                defaults=countdata
+                defaults=total_forecast_count
             )
             print(f"Total_forecast_count was updated, the new count is: {total_forecast_count}")
     except Exception as e:
@@ -72,9 +70,40 @@ def delete_old_forecasts(threshold):
         cursor.close()
         conn.close()
 
+def api_stats():
+    total_api_count = {'stat': WeatherServices.objects.count() - 1} #subtract 1 to exclude ensemble from api number
+    try:
+        with transaction.atomic():
+            SiteStats.objects.update_or_create(
+                name='total_api_count',
+                defaults=total_api_count
+            )
+            print(f"total_api_count was updated, the new count is: {total_api_count}")
+    except Exception as e:
+        print(f"error updating total_api_count: {e}")
+    finally:
+        connection.close()
+
+def location_count():
+    total_location_count = {'stat': Locations.objects.count()}
+    try:
+        with transaction.atomic():
+            SiteStats.objects.update_or_create(
+                name='total_location_count',
+                defaults=total_location_count
+            )
+            print(f"total_location_count was updated, the new count is: {total_location_count}")
+    except Exception as e:
+        print(f"error updating total_location_count: {e}")
+    finally:
+        connection.close()
+
+
 def main():
     total_forecasts()
     delete_old_forecasts(threshold_epoch)
+    api_stats()
+    location_count()
 
 if __name__ == "__main__":
     main()

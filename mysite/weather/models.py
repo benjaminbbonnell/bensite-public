@@ -34,17 +34,6 @@ class WeatherServices(models.Model):
     class Meta:
         verbose_name_plural = "Weather Services"
 
-class WeatherLocations(models.Model):
-    city_name = models.CharField(max_length=100)
-    state_code = models.CharField(max_length=2)
-    country_code = models.CharField(max_length=3)
-    latitude = models.DecimalField(max_digits=7, decimal_places=4, null=True)
-    longitude = models.DecimalField(max_digits=7, decimal_places=4, null=True)
-    accuweathercode = models.IntegerField(blank=True, null=True)
-
-    class Meta:
-        verbose_name_plural = "Weather Locations"
-
 class Locations(models.Model):
     city_id = models.AutoField(primary_key=True)
     city_name = models.CharField(max_length=100)
