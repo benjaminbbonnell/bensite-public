@@ -23,20 +23,30 @@
                     </p>
 
                     <h2>Temperature</h2>
-                    <div style="text-align: center; margin-bottom: 20px;">
-                        <button id="abs_toggle" type="button" class="btn btn-primary">ABS</button>
+                    
+                    <div style="position: relative; margin-bottom: 30px;">
+                        <div class="chart-controls">
+                            <label for="absDropdown" style="margin: 0; font-size: 0.9em; font-weight: 500;">Difference Mode:</label>
+                            <select id="absDropdown" class="form-select form-select-sm" style="width: auto;">
+                                <option value="hbc_series_abs">Absolute Value</option>
+                                <option value="hbc_series_signed">Signed Difference</option>
+                            </select>
+                        </div>
+                        <div id="hbc_container"></div>
                     </div>
-                    <div id="hbc_container"></div>
-                    <div class="dropdown-container" style="text-align: center; margin-bottom: 20px;">
-                        <label for="hoursDropdown">Select Hours Before:</label>
-                        <select id="hoursDropdown">
-                            <option value="1">1 Hour</option>
-                            <option value="6">6 Hours</option>
-                            <option value="12" selected>12 Hours</option>
-                            <option value="24">24 Hours</option>
-                        </select>
+                    
+                    <div style="position: relative; margin-bottom: 30px;">
+                        <div class="chart-controls">
+                            <label for="hoursDropdown" style="margin: 0; font-size: 0.9em; font-weight: 500;">Hours Before:</label>
+                            <select id="hoursDropdown" class="form-select form-select-sm" style="width: auto;">
+                                <option value="1">1 Hour</option>
+                                <option value="6">6 Hours</option>
+                                <option value="12" selected>12 Hours</option>
+                                <option value="24">24 Hours</option>
+                            </select>
+                        </div>
+                        <div id="ma_container"></div>
                     </div>
-                    <div id="ma_container"></div>
                 </div>
             </div>
         </div>
@@ -44,15 +54,15 @@
 
     <script>
     let hbc_chart = null;
-    let isAbsoluteMode = true;
     const hbc_series_abs = {{ hbc_series_abs|safe }};
     const hbc_series_signed = {{ hbc_series_signed|safe }};
     const hbc_categories = {{ hbc_categories|safe }};
+    let currentDifferenceMode = 'hbc_series_abs';
 
-    function renderHBCChart() {
-      console.log("Rendering HBC chart...");
-      let selectedSeries = isAbsoluteMode ? hbc_series_abs : hbc_series_signed;
-      console.log("Selected series mode: " + (isAbsoluteMode ? "Absolute" : "Signed"));
+    function renderHBCChart(seriesMode) {
+      console.log("Rendering HBC chart with mode:", seriesMode);
+      let selectedSeries = seriesMode === 'hbc_series_abs' ? hbc_series_abs : hbc_series_signed;
+      console.log("Selected series mode: " + (seriesMode === 'hbc_series_abs' ? "Absolute" : "Signed"));
       
       if (hbc_chart) {
         hbc_chart.destroy();
@@ -90,24 +100,27 @@
     document.addEventListener('DOMContentLoaded', function () {
       console.log("DOMContentLoaded: Initializing HBC chart");
       applyHighchartsTheme();
-      renderHBCChart();
+      
+      const absDropdown = document.getElementById('absDropdown');
+      if (absDropdown) {
+        renderHBCChart(absDropdown.value);
+        
+        absDropdown.addEventListener('change', function () {
+          console.log("Difference mode changed to:", this.value);
+          currentDifferenceMode = this.value;
+          renderHBCChart(this.value);
+        });
+      } else {
+        console.error("HBC dropdown not found");
+      }
     });
 
     // Listen for theme changes and redraw charts
     document.addEventListener('themeChanged', function(event) {
       console.log("themeChanged event received, redrawing HBC chart");
       applyHighchartsTheme();
-      renderHBCChart();
+      renderHBCChart(currentDifferenceMode);
     });
-
-    const absToggleBtn = document.getElementById('abs_toggle');
-    if (absToggleBtn) {
-        absToggleBtn.addEventListener('click', function() {
-            console.log("ABS toggle button clicked");
-            isAbsoluteMode = !isAbsoluteMode;
-            renderHBCChart();
-        });
-    }
 
     </script>
 
@@ -201,7 +214,6 @@
         }
     });
 
-    // Listen for theme changes and redraw the chart with current selection
     document.addEventListener('themeChanged', function() {
         console.log("themeChanged event received, redrawing MA chart");
         updateChart(currentHoursBefore);
