@@ -104,7 +104,7 @@ class LocationResponseSerializer(serializers.Serializer):
 @extend_schema_serializer(
     examples=[
         OpenApiExample(
-            "Successful Example of Location Data",
+            "Successful Example of Current Forecast Data",
             value=[
                 {
                     "location": {
@@ -114,28 +114,26 @@ class LocationResponseSerializer(serializers.Serializer):
                         "country": "USA",
                         "latitude": 38.9072,
                         "longitude": -77.0369,
-                        "gmt_time_epoch": 1771002000,
-                        "gmt_time": "2026-02-13T17:00:00+00:00"
+                        "gmt_time_epoch": 1771012800,
+                        "gmt_time": "2026-02-13T20:00:00+00:00"
                     }
                 },
                 {
-                    "1771002000": {
-                        "visualcrossing": {
-                            "temp_f": 35.0,
-                            "feels_like_f": 27.8,
-                            "precip_prob": 0.0,
-                            "condition": "Clear"
+                    "1771012800": {
+                        "openmeteo": {
+                            "temp_f": 38.5,
+                            "feels_like_f": 29.5,
+                            "precip_prob": 0
                         },
-                        "weathercom": {
-                            "temp_f": 32.4,
-                            "feels_like_f": 28.4,
-                            "chance_of_rain": 0.0,
-                            "chance_of_snow": 0.0,
-                            "condition": "Sunny"
+                        "visualcrossing": {
+                            "temp_f": 38,
+                            "feels_like_f": 32.8,
+                            "precip_prob": 0,
+                            "condition": "Clear"
                         },
                     }
                 }
-            ],
+            ]
         )
     ]
 )
@@ -510,23 +508,19 @@ class CurrentForecast(APIView):
 
         location = Locations.objects.get(pk=city_id_param)
 
-        response_list = []
-
-        location_dict = {}
-        location_dict["location"] = {
-            "location_id": location.city_id,
-            "name": location.city_name,
-            "state": location.state_code,
-            "country": location.country_code,
-            "latitude": location.latitude,
-            "longitude": location.longitude,
-            "gmt_time_epoch": current_time,
-            "gmt_time": datetime.fromtimestamp(current_time, tz=timezone.utc).isoformat()
+        response_data = {
+            "location": {
+                "location_id": location.city_id,
+                "name": location.city_name,
+                "state": location.state_code,
+                "country": location.country_code,
+                "latitude": location.latitude,
+                "longitude": location.longitude,
+                "gmt_time_epoch": current_time,
+                "gmt_time": datetime.fromtimestamp(current_time, tz=timezone.utc).isoformat()
+            },
+            "forecasts": {}
         }
-
-        response_list.append(location_dict)
-
-        forecasts_dict = {}
 
         for row in rows:
             data = {
@@ -539,10 +533,9 @@ class CurrentForecast(APIView):
             "condition": row.condition,
             }
             
-            if row.forecast_epoch not in forecasts_dict:
-                forecasts_dict[row.forecast_epoch] = {}
+            if row.forecast_epoch not in response_data["forecasts"]:
+                response_data["forecasts"][row.forecast_epoch] = {}
             
-            forecasts_dict[row.forecast_epoch][row.api_name] = {k: v for k, v in data.items() if v is not None}
+            response_data["forecasts"][row.forecast_epoch][row.api_name] = {k: v for k, v in data.items() if v is not None}
         
-        response_list.append(forecasts_dict)
-        return Response(response_list)
+        return Response(response_data)

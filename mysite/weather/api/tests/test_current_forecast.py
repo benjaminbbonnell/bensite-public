@@ -66,6 +66,24 @@ class CurrentForecastAPITestCase(TestCase):
             temp=55.0,
             feels_like=50.0
         )
+        
+        self.create_forecast_data(
+            api_name="openmeteo",
+            city_id=2,
+            city_name="Dallas",
+            hours_ahead=1,
+            temp=56.0,
+            feels_like=51.0
+        )
+        
+        self.create_forecast_data(
+            api_name="openmeteo",
+            city_id=2,
+            city_name="Dallas",
+            hours_ahead=2,
+            temp=57.0,
+            feels_like=52.0
+        )
     
     def create_forecast_data(self, api_name, city_id, city_name, hours_ahead, temp, feels_like):
         forecast_epoch = self.current_time + (hours_ahead * 3600)
@@ -87,16 +105,17 @@ class CurrentForecastAPITestCase(TestCase):
         response = self.client.get(self.url, {"city_id": 1})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 2)
+        self.assertIn("location", response.data)
+        self.assertIn("forecasts", response.data)
 
         # Location 1 should be washington DC
-        location_data = response.data[0]["location"]
+        location_data = response.data["location"]
         self.assertEqual(location_data["location_id"], 1)
         self.assertEqual(location_data["name"], "Washington")
         self.assertEqual(location_data["state"], "DC")
         self.assertEqual(location_data["country"], "USA")
         
-        forecast_data = response.data[1]
+        forecast_data = response.data["forecasts"]
         self.assertIsInstance(forecast_data, dict)
         self.assertTrue(len(forecast_data) > 0)
     
@@ -105,7 +124,7 @@ class CurrentForecastAPITestCase(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        location_data = response.data[0]["location"]
+        location_data = response.data["location"]
         self.assertEqual(location_data["location_id"], 1)
         self.assertEqual(location_data["name"], "Washington")
     
@@ -114,7 +133,7 @@ class CurrentForecastAPITestCase(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        location_data = response.data[0]["location"]
+        location_data = response.data["location"]
         self.assertEqual(location_data["location_id"], 1)
         self.assertEqual(location_data["name"], "Washington")
 
@@ -123,8 +142,21 @@ class CurrentForecastAPITestCase(TestCase):
         response = self.client.get(self.url, {"lat": 38.9072, "lon": -77.0369, "city_id": 2})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data[0]["location"]["location_id"], 2)
+        self.assertEqual(response.data["location"]["location_id"], 2)
+    
+    def test_get_current_forecast_with_forecast_hours(self):
+        # if forecast_hours is specified, limit forecasts to that many hours ahead (current hour + next 2 = 3 entries)
+        response = self.client.get(self.url, {"city_id": 2, "forecast_hours": 2})
 
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        forecasts = response.data["forecasts"]
+        self.assertEqual(len(forecasts), 3)
+
+        for epoch_str in forecasts.keys():
+            forecast_epoch = int(epoch_str)
+            self.assertGreaterEqual(forecast_epoch, self.current_time)
+            self.assertLessEqual(forecast_epoch, self.current_time + 2 * 3600)
 
     def test_get_current_forecast_with_invalid_city_id(self):
         response = self.client.get(self.url, {"city_id": "A"})
@@ -137,3 +169,4 @@ class CurrentForecastAPITestCase(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["error"], "forecast_hours must be an integer between 0 and 12.")
+

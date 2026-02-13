@@ -114,7 +114,7 @@ def execsql(query):
     try:
         cursor.execute(query)
         conn.commit()
-        print("qauery complete.")
+        print("query complete.")
 
     except (Exception, psycopg2.DatabaseError) as error:
         print("Error: %s" % error)
