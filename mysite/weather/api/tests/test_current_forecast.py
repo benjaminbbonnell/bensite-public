@@ -117,3 +117,23 @@ class CurrentForecastAPITestCase(TestCase):
         location_data = response.data[0]["location"]
         self.assertEqual(location_data["location_id"], 1)
         self.assertEqual(location_data["name"], "Washington")
+
+    def test_get_current_forecast_with_city_id_and_coords(self):
+        #if a city id and coordinates are specified, city ID should be used
+        response = self.client.get(self.url, {"lat": 38.9072, "lon": -77.0369, "city_id": 2})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data[0]["location"]["location_id"], 2)
+
+
+    def test_get_current_forecast_with_invalid_city_id(self):
+        response = self.client.get(self.url, {"city_id": "A"})
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data["error"], "Invalid city ID specified.")
+
+    def test_get_current_forecast_with_invalid_forecast_hours(self):
+        response = self.client.get(self.url, {"city_id": "1", "forecast_hours" : -1})
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data["error"], "forecast_hours must be an integer between 0 and 12.")

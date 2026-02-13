@@ -457,13 +457,13 @@ class CurrentForecast(APIView):
                 city_id_param_converted = int(city_id_param)
             except ValueError:
                 return Response(
-                    {"error": "Invalid city ID specified"},
+                    {"error": "Invalid city ID specified."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
             city_id_param = city_id_param_converted
             if not Locations.objects.filter(pk=city_id_param).exists():
                 return Response(
-                    {"error": "Invalid city ID specified"},
+                    {"error": "Invalid city ID specified."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
