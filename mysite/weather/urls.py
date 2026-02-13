@@ -1,7 +1,7 @@
 from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 from . import views
-from .api import HBView, MAView, LocationList
+from .api import HBView, MAView, LocationList, CurrentForecast
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 app_name = 'weather'
@@ -12,6 +12,7 @@ urlpatterns = [
     path('api/hb/', HBView.as_view(), name='Hours Before'),
     path('api/ma/', MAView.as_view(), name='Monthly Average'),
     path('api/locations/', LocationList.as_view(), name='Location List'),
+    path('api/currentforecast/', CurrentForecast.as_view(), name='Current Forecast'),
     path('api/schema/', csrf_exempt(SpectacularAPIView.as_view()), name='schema'),
     path('api/', csrf_exempt(SpectacularSwaggerView.as_view(url_name='weather:schema')), name='swagger-ui'),
     path('api/redoc/', csrf_exempt(SpectacularRedocView.as_view(url_name='weather:schema')), name='redoc'),

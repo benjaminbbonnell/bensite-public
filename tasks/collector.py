@@ -38,7 +38,7 @@ sqlport = os.environ.get('SQLPORT')
 
 TIMEOUT = 15
 
-current_time = round((int(time.time())) / 3600) * 3600
+current_time = round((int(time.time())) // 3600) * 3600
 
 def getlocations():
     locations = list(Locations.objects.values())
