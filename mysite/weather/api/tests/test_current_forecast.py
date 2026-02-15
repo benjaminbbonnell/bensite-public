@@ -108,7 +108,6 @@ class CurrentForecastAPITestCase(TestCase):
         self.assertIn("location", response.data)
         self.assertIn("forecasts", response.data)
 
-        # Location 1 should be washington DC
         location_data = response.data["location"]
         self.assertEqual(location_data["location_id"], 1)
         self.assertEqual(location_data["name"], "Washington")
