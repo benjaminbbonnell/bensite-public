@@ -260,7 +260,7 @@ class MAView(APIView):
                 many=True,
                 examples=[
                     OpenApiExample(name="All", value=""),
-                    OpenApiExample(name="November", value="11"),
+                    OpenApiExample(name="January", value="1"),
                     OpenApiExample(name="December", value="12"),
                 ],
             ),
