@@ -63,6 +63,34 @@ class ForecastPivot(models.Model):
     class Meta:
         verbose_name_plural = "Forecast Pivot"
 
+class ForecastPivotV2(models.Model):
+    api_name = models.CharField(max_length=100)
+    city_id = models.IntegerField(blank=True, null=True)
+    city_name = models.CharField(max_length=100)
+    forecast_made = models.IntegerField(null=True)
+    forecast_epoch = models.IntegerField(null=True)
+    currenttemp = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    temp_f = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    hoursbefore = models.IntegerField(null=True)
+    forecasted_precip_in = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    forecasted_precip_prob = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    current_precip_in = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    current_precip_prob = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+
+    class Meta:
+        verbose_name_plural = "Forecast Pivot v2"
+
+class HistoricalData(models.Model):
+    city_id = models.IntegerField(blank=True, null=True)
+    city_name = models.CharField(max_length=100)
+    time_epoch = models.IntegerField(null=True)
+    temp_f = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    current_precip_in = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    current_precip_prob = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+
+    class Meta:
+        verbose_name_plural = "Historical Data"
+
 class HoursBeforeChart(models.Model):
     api_name = models.CharField(max_length=100)
     avg_dif = models.DecimalField(max_digits=5, decimal_places=2, null=True)
@@ -80,6 +108,18 @@ class MonthlyAverageChart(models.Model):
 
     class Meta:
         verbose_name_plural = "Monthly Average Chart"
+
+class PrecipProbChart(models.Model):
+    api_name = models.CharField(max_length=100)
+    forecast_prob_bucket = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    actual_percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    forecasted_count = models.IntegerField(null=True)
+    actual_count = models.IntegerField(null=True)
+    hoursbefore = models.IntegerField(null=True)
+    forecast_pivot_version = models.IntegerField(null=True)
+
+    class Meta:
+        verbose_name_plural = "Precipitation Probability Chart"
 
 class SiteStats(models.Model):
     name = models.CharField(max_length=100, primary_key=True)
