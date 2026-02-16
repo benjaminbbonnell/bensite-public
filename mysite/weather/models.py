@@ -96,6 +96,7 @@ class HoursBeforeChart(models.Model):
     avg_dif = models.DecimalField(max_digits=5, decimal_places=2, null=True)
     signed_dif = models.DecimalField(max_digits=5, decimal_places=2, null=True)
     hoursbefore = models.IntegerField(null=True)
+    forecast_pivot_version = models.IntegerField(null=True)
 
     class Meta:
         verbose_name_plural = "Hours Before Chart"
@@ -105,17 +106,18 @@ class MonthlyAverageChart(models.Model):
     month = models.IntegerField(null=True)
     avg_dif = models.DecimalField(max_digits=5, decimal_places=2, null=True)
     hoursbefore = models.IntegerField(null=True)
+    forecast_pivot_version = models.IntegerField(null=True)
 
     class Meta:
         verbose_name_plural = "Monthly Average Chart"
 
 class PrecipProbChart(models.Model):
     api_name = models.CharField(max_length=100)
+    hoursbefore = models.IntegerField(null=True)
     forecast_prob_bucket = models.DecimalField(max_digits=5, decimal_places=2, null=True)
     actual_percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True)
     forecasted_count = models.IntegerField(null=True)
     actual_count = models.IntegerField(null=True)
-    hoursbefore = models.IntegerField(null=True)
     forecast_pivot_version = models.IntegerField(null=True)
 
     class Meta:

@@ -20,21 +20,30 @@ queries = {
     "hoursbeforechart": '''
         TRUNCATE weather_hoursbeforechart RESTART IDENTITY;
 
-        INSERT INTO weather_hoursbeforechart(api_name, avg_dif, signed_dif, hoursbefore)
-        SELECT api_name, ROUND(AVG(ABS(currenttemp - temp_f)), 2) AS avg_dif, ROUND(AVG(currenttemp - temp_f), 2) AS signed_dif, hoursbefore
-        FROM weather_forecastpivot
-        GROUP BY api_name, hoursbefore
-        ORDER BY hoursbefore, api_name;
+        INSERT INTO weather_hoursbeforechart(api_name, avg_dif, signed_dif, hoursbefore, forecast_pivot_version)
+        SELECT 
+            api_name, 
+            ROUND(AVG(ABS(currenttemp - temp_f)), 2) AS avg_dif, 
+            ROUND(AVG(currenttemp - temp_f), 2) AS signed_dif, 
+            hoursbefore, 
+            1 AS forecast_pivot_version
+        FROM 
+            weather_forecastpivot
+        GROUP BY 
+            api_name, hoursbefore
+        ORDER BY 
+            hoursbefore, api_name;
     ''',
     "monthlyaveragechart": '''
         TRUNCATE weather_monthlyaveragechart RESTART IDENTITY;
 
-        INSERT INTO weather_monthlyaveragechart(api_name, month, avg_dif, hoursbefore)
+        INSERT INTO weather_monthlyaveragechart(api_name, month, avg_dif, hoursbefore, forecast_pivot_version)
         SELECT
             api_name,
             to_char(to_timestamp(forecast_made), 'MM')::int as month,
             ROUND(AVG(ABS(currenttemp - temp_f)), 2) AS avg_dif,
-            hoursbefore
+            hoursbefore,
+            1 AS forecast_pivot_version
         FROM
             weather_forecastpivot
         WHERE
@@ -43,51 +52,51 @@ queries = {
             api_name, month, hoursbefore;
     ''',
     "precipitationprobchart" : '''
-    TRUNCATE weather_precipprobchart RESTART IDENTITY;
+        TRUNCATE weather_precipprobchart RESTART IDENTITY;
 
-    WITH forecast_counts AS (
-    SELECT 
-        api_name, 
-        hoursbefore, 
-        FLOOR(forecasted_precip_prob / 10) * 10 AS forecast_prob_bucket, 
-        COUNT(*) AS forecasted_count
-    FROM weather_forecastpivot
-    WHERE hoursbefore IN (1,6,12,24) AND forecasted_precip_prob IS NOT NULL
-    GROUP BY api_name, FLOOR(forecasted_precip_prob / 10) * 10, hoursbefore
-    ),
-    actual_counts AS (
+        WITH forecast_counts AS (
         SELECT 
             api_name, 
             hoursbefore, 
             FLOOR(forecasted_precip_prob / 10) * 10 AS forecast_prob_bucket, 
-            COUNT(*) AS actual_count
+            COUNT(*) AS forecasted_count
         FROM weather_forecastpivot
-        WHERE hoursbefore IN (1,6,12,24) 
-            AND forecasted_precip_prob IS NOT NULL 
-            AND (current_precip_in > 0.00 OR current_precip_prob >= 60)
+        WHERE hoursbefore IN (1,6,12,24) AND forecasted_precip_prob IS NOT NULL
         GROUP BY api_name, FLOOR(forecasted_precip_prob / 10) * 10, hoursbefore
-    )
+        ),
+        actual_counts AS (
+            SELECT 
+                api_name, 
+                hoursbefore, 
+                FLOOR(forecasted_precip_prob / 10) * 10 AS forecast_prob_bucket, 
+                COUNT(*) AS actual_count
+            FROM weather_forecastpivot
+            WHERE hoursbefore IN (1,6,12,24) 
+                AND forecasted_precip_prob IS NOT NULL 
+                AND (current_precip_in > 0.00 OR current_precip_prob >= 60)
+            GROUP BY api_name, FLOOR(forecasted_precip_prob / 10) * 10, hoursbefore
+        )
 
-    INSERT INTO
-        weather_precipprobchart(api_name, hoursbefore, forecast_prob_bucket, actual_percentage, forecasted_count, actual_count, forecast_pivot_version)
+        INSERT INTO
+            weather_precipprobchart(api_name, hoursbefore, forecast_prob_bucket, actual_percentage, forecasted_count, actual_count, forecast_pivot_version)
 
-    SELECT
-        forecast_counts.api_name, 
-        forecast_counts.hoursbefore, 
-        forecast_counts.forecast_prob_bucket, 
-        ROUND(COALESCE(actual_counts.actual_count::numeric / forecast_counts.forecasted_count::numeric * 100, 0), 2) AS actual_percentage,	
-        forecast_counts.forecasted_count,
-        COALESCE(actual_counts.actual_count, 0) AS actual_count,
-        1 AS forecast_pivot_version
-    FROM 
-        forecast_counts
-    LEFT JOIN 
-        actual_counts
-    ON 
-        forecast_counts.api_name = actual_counts.api_name
-        AND forecast_counts.hoursbefore = actual_counts.hoursbefore
-        AND forecast_counts.forecast_prob_bucket = actual_counts.forecast_prob_bucket
-    ORDER BY forecast_counts.api_name, forecast_counts.forecast_prob_bucket;'''
+        SELECT
+            forecast_counts.api_name, 
+            forecast_counts.hoursbefore, 
+            forecast_counts.forecast_prob_bucket, 
+            ROUND(COALESCE(actual_counts.actual_count::numeric / forecast_counts.forecasted_count::numeric * 100, 0), 2) AS actual_percentage,	
+            forecast_counts.forecasted_count,
+            COALESCE(actual_counts.actual_count, 0) AS actual_count,
+            1 AS forecast_pivot_version
+        FROM 
+            forecast_counts
+        LEFT JOIN 
+            actual_counts
+        ON 
+            forecast_counts.api_name = actual_counts.api_name
+            AND forecast_counts.hoursbefore = actual_counts.hoursbefore
+            AND forecast_counts.forecast_prob_bucket = actual_counts.forecast_prob_bucket
+        ORDER BY forecast_counts.api_name, forecast_counts.forecast_prob_bucket;'''
 }
 
 def execsql(query):
