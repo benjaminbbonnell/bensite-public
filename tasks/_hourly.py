@@ -13,6 +13,7 @@ django.setup()
 from collector import main as collector_main
 from pivot import main as pivot_main
 from analysis import main as analysis_main
+from analysisv2 import main as analysis_mainv2
 from historical_data import main as historical_main
 
 def run_hourly():
@@ -36,6 +37,10 @@ def run_hourly():
         analysis_main()
         end_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         print(f"[{end_timestamp}]: analysis complete successfully.")
+
+        analysis_mainv2()
+        end_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        print(f"[{end_timestamp}]: analysisv2 complete successfully.") 
 
         return 0
 
