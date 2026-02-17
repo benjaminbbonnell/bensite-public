@@ -37,8 +37,10 @@ def index(request):
         return [{'name': api_name_dict.get(api_name), 'data': hbc_series_data[api_name]} for api_name in hbc_series_data]
 
     hbc_categories = sorted(set(item['hoursbefore'] for item in hbc_data))
-    hbc_series_abs = hbc_series_helper(hbc_data, True)
-    hbc_series_signed = hbc_series_helper(hbc_data, False)
+    hbc_series_abs_v1 = hbc_series_helper(hbc_data, True)
+    hbc_series_signed_v1 = hbc_series_helper(hbc_data, False)
+    hbc_series_abs_v2 = hbc_series_helper(hbc_data, True, version=2)
+    hbc_series_signed_v2 = hbc_series_helper(hbc_data, False, version=2)
 
 
     def convert_ma_format(month, hoursbefore):
@@ -60,9 +62,9 @@ def index(request):
             }
             for api_name, data in ma_series_data.items()
         ]
-    
+
         return ma_series
-    
+
     ma_cat_data = sorted({
         (item['month'], item['hoursbefore'])
         for item in ma_data
@@ -70,14 +72,18 @@ def index(request):
     })
 
     ma_categories = [convert_ma_format(item[0], item[1]) for item in ma_cat_data]
-    ma_series = ma_series_helper(ma_data)
+    ma_series_v1 = ma_series_helper(ma_data, version=1)
+    ma_series_v2 = ma_series_helper(ma_data, version=2)
 
     context = {
-        'hbc_series_abs': hbc_series_abs,
-        'hbc_series_signed': hbc_series_signed,
         'hbc_categories': hbc_categories,
+        'hbc_series_abs_v1': hbc_series_abs_v1,
+        'hbc_series_signed_v1': hbc_series_signed_v1,
+        'hbc_series_abs_v2': hbc_series_abs_v2,
+        'hbc_series_signed_v2': hbc_series_signed_v2,
         'ma_categories' : ma_categories,
-        'ma_series' : ma_series,
+        'ma_series_v1' : ma_series_v1,
+        'ma_series_v2' : ma_series_v2,
         'forecastcount': total_forecast_count,
         'api_count': api_count_formatted,
         'location_count': location_count

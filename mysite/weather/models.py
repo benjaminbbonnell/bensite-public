@@ -83,10 +83,11 @@ class ForecastPivotV2(models.Model):
 class HistoricalData(models.Model):
     city_id = models.IntegerField(blank=True, null=True)
     city_name = models.CharField(max_length=100)
+    api_name = models.CharField(max_length=100)
     time_epoch = models.IntegerField(null=True)
     temp_f = models.DecimalField(max_digits=5, decimal_places=2, null=True)
-    current_precip_in = models.DecimalField(max_digits=5, decimal_places=2, null=True)
-    current_precip_prob = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    precip_in = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    precip_prob = models.DecimalField(max_digits=5, decimal_places=2, null=True)
 
     class Meta:
         verbose_name_plural = "Historical Data"

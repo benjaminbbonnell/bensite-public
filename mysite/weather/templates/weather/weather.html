@@ -25,24 +25,34 @@
                     <h2>Temperature</h2>
                     
                     <div style="position: relative; margin-bottom: 30px;">
-                        <div class="chart-controls">
+                        <div class="chart-controls" style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
                             <label for="absDropdown" style="margin: 0; font-size: 0.9em; font-weight: 500;">Difference Mode:</label>
                             <select id="absDropdown" class="form-select form-select-sm" style="width: auto;">
                                 <option value="hbc_series_abs">Absolute Value</option>
                                 <option value="hbc_series_signed">Signed Difference</option>
+                            </select>
+                            <label for="pivotVersionHBC" style="margin: 0; margin-left: 15px; font-size: 0.9em; font-weight: 500;">Pivot Version:</label>
+                            <select id="pivotVersionHBC" class="form-select form-select-sm" style="width: auto;">
+                                <option value="1">v1</option>
+                                <option value="2">v2</option>
                             </select>
                         </div>
                         <div id="hbc_container"></div>
                     </div>
                     
                     <div style="position: relative; margin-bottom: 30px;">
-                        <div class="chart-controls">
+                        <div class="chart-controls" style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
                             <label for="hoursDropdown" style="margin: 0; font-size: 0.9em; font-weight: 500;">Hours Before:</label>
                             <select id="hoursDropdown" class="form-select form-select-sm" style="width: auto;">
                                 <option value="1">1 Hour</option>
                                 <option value="6">6 Hours</option>
                                 <option value="12" selected>12 Hours</option>
                                 <option value="24">24 Hours</option>
+                            </select>
+                            <label for="pivotVersionMA" style="margin: 0; margin-left: 15px; font-size: 0.9em; font-weight: 500;">Pivot Version:</label>
+                            <select id="pivotVersionMA" class="form-select form-select-sm" style="width: auto;">
+                                <option value="1">v1</option>
+                                <option value="2">v2</option>
                             </select>
                         </div>
                         <div id="ma_container"></div>
@@ -63,15 +73,24 @@
 
     <script>
     let hbc_chart = null;
-    const hbc_series_abs = {{ hbc_series_abs|safe }};
-    const hbc_series_signed = {{ hbc_series_signed|safe }};
+    const hbc_series_abs_v1 = {{ hbc_series_abs_v1|safe }};
+    const hbc_series_signed_v1 = {{ hbc_series_signed_v1|safe }};
+    const hbc_series_abs_v2 = {{ hbc_series_abs_v2|safe }};
+    const hbc_series_signed_v2 = {{ hbc_series_signed_v2|safe }};
     const hbc_categories = {{ hbc_categories|safe }};
-    let currentDifferenceMode = 'hbc_series_abs';
+    let currentDifferenceMode = 'abs';
+    let currentHBCVersion = 1;
 
-    function renderHBCChart(seriesMode) {
-      console.log("Rendering HBC chart with mode:", seriesMode);
-      let selectedSeries = seriesMode === 'hbc_series_abs' ? hbc_series_abs : hbc_series_signed;
-      console.log("Selected series mode: " + (seriesMode === 'hbc_series_abs' ? "Absolute" : "Signed"));
+    function renderHBCChart(diffMode, version) {
+      console.log("Rendering HBC chart with mode:", diffMode, "version:", version);
+      
+      let selectedSeries;
+      if (version === 1) {
+        selectedSeries = diffMode === 'abs' ? hbc_series_abs_v1 : hbc_series_signed_v1;
+      } else {
+        selectedSeries = diffMode === 'abs' ? hbc_series_abs_v2 : hbc_series_signed_v2;
+      }
+      console.log("Selected series mode: " + (diffMode === 'abs' ? "Absolute" : "Signed") + " v" + version);
       
       if (hbc_chart) {
         hbc_chart.destroy();
@@ -111,16 +130,24 @@
       applyHighchartsTheme();
       
       const absDropdown = document.getElementById('absDropdown');
-      if (absDropdown) {
-        renderHBCChart(absDropdown.value);
+      const versionDropdown = document.getElementById('pivotVersionHBC');
+      
+      if (absDropdown && versionDropdown) {
+        renderHBCChart(currentDifferenceMode, currentHBCVersion);
         
         absDropdown.addEventListener('change', function () {
           console.log("Difference mode changed to:", this.value);
-          currentDifferenceMode = this.value;
-          renderHBCChart(this.value);
+          currentDifferenceMode = this.value === 'hbc_series_abs' ? 'abs' : 'signed';
+          renderHBCChart(currentDifferenceMode, currentHBCVersion);
+        });
+        
+        versionDropdown.addEventListener('change', function () {
+          console.log("HBC version changed to:", this.value);
+          currentHBCVersion = parseInt(this.value);
+          renderHBCChart(currentDifferenceMode, currentHBCVersion);
         });
       } else {
-        console.error("HBC dropdown not found");
+        console.error("HBC dropdowns not found");
       }
     });
 
@@ -128,7 +155,7 @@
     document.addEventListener('themeChanged', function(event) {
       console.log("themeChanged event received, redrawing HBC chart");
       applyHighchartsTheme();
-      renderHBCChart(currentDifferenceMode);
+      renderHBCChart(currentDifferenceMode, currentHBCVersion);
     });
 
     </script>
@@ -136,13 +163,18 @@
 
     <script>
     let ma_chart = null;
-    const ma_series_original = {{ ma_series|safe }};
+    const ma_series_v1 = {{ ma_series_v1|safe }};
+    const ma_series_v2 = {{ ma_series_v2|safe }};
     const ma_categories_original = {{ ma_categories|safe }};
     let currentHoursBefore = 12;
+    let currentMAVersion = 1;
 
-    function updateChart(hoursbefore) {
-        console.log("Updating MA chart with hoursbefore:", hoursbefore);
+    function updateChart(hoursbefore, version) {
+        console.log("Updating MA chart with hoursbefore:", hoursbefore, "version:", version);
         currentHoursBefore = hoursbefore;
+        currentMAVersion = version;
+        
+        const ma_series_original = version === 1 ? ma_series_v1 : ma_series_v2;
 
         const filteredSeries = ma_series_original.map(api => {
             return {
@@ -206,18 +238,26 @@
         console.log("DOMContentLoaded: Initializing MA chart");
         
         const dropdown = document.getElementById('hoursDropdown');
+        const versionDropdown = document.getElementById('pivotVersionMA');
         const ma_container = document.getElementById('ma_container');
 
-        if (dropdown && ma_container) {
-            updateChart(parseInt(dropdown.value));
+        if (dropdown && versionDropdown && ma_container) {
+            updateChart(parseInt(dropdown.value), currentMAVersion);
 
             dropdown.addEventListener('change', function () {
                 console.log("Dropdown value changed to:", this.value);
-                updateChart(parseInt(this.value));
+                updateChart(parseInt(this.value), currentMAVersion);
+            });
+            
+            versionDropdown.addEventListener('change', function () {
+                console.log("MA version changed to:", this.value);
+                currentMAVersion = parseInt(this.value);
+                updateChart(currentHoursBefore, currentMAVersion);
             });
         } else {
             console.error("MA Required elements not found:", {
                 dropdown: !!dropdown,
+                versionDropdown: !!versionDropdown,
                 container: !!ma_container
             });
         }
@@ -225,7 +265,7 @@
 
     document.addEventListener('themeChanged', function() {
         console.log("themeChanged event received, redrawing MA chart");
-        updateChart(currentHoursBefore);
+        updateChart(currentHoursBefore, currentMAVersion);
     });
     </script>
 </main>

@@ -13,6 +13,7 @@ django.setup()
 from collector import main as collector_main
 from pivot import main as pivot_main
 from analysis import main as analysis_main
+from historical_data import main as historical_main
 
 def run_hourly():
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -23,6 +24,10 @@ def run_hourly():
         collector_main()
         end_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         print(f"[{end_timestamp}]: collected weather data successfully.")
+
+        historical_main()
+        end_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        print(f"[{end_timestamp}]: collected historical weather data successfully.")
 
         pivot_main()
         end_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
