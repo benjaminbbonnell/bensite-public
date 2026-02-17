@@ -117,6 +117,38 @@ queries = {
         JOIN currenttemps ON forecast_data.city_id = currenttemps.city_id AND forecast_data.api_name = currenttemps.api_name
         WHERE forecast_data.forecast_epoch = (SELECT current FROM current) AND hoursbefore < 72
         GROUP BY forecast_data.city, forecast_data.city_id, forecast_made, forecast_epoch, forecast_data.hoursbefore;
+    ''',
+    "pivotv2": '''
+        WITH last_hour AS (
+        SELECT MAX(time_epoch) AS last_hour_time
+        FROM weather_historicaldata
+        )
+
+        INSERT INTO weather_forecastpivotv2(api_name, city_id, city_name, forecast_made, forecast_epoch, currenttemp, temp_f, hoursbefore, current_precip_in, current_precip_prob, forecasted_precip_in, forecasted_precip_prob)
+
+        SELECT 
+            weather_forecastdata.api_name, 
+            weather_forecastdata.city_id, 
+            weather_forecastdata.city,
+            weather_forecastdata.forecast_made, 
+            weather_forecastdata.forecast_epoch,
+            weather_historicaldata.temp_f AS currenttemp,
+            weather_forecastdata.temp_f,
+            (weather_forecastdata.forecast_epoch - weather_forecastdata.forecast_made) / 3600 AS hoursbefore,
+            weather_forecastdata.precip_in AS forecasted_precip_in, 
+            weather_forecastdata.precip_prob AS forecasted_precip_prob, 
+            weather_forecastdata.precip_in AS current_precip_in,
+            weather_historicaldata.precip_prob AS current_precip_prob
+
+        FROM
+            weather_forecastdata
+        LEFT JOIN
+            weather_historicaldata
+        ON
+            weather_forecastdata.city_id = weather_historicaldata.city_id AND
+            weather_forecastdata.forecast_epoch = weather_historicaldata.time_epoch
+        WHERE
+            weather_forecastdata.forecast_epoch IN (SELECT last_hour_time FROM last_hour)
     '''
 }
 
