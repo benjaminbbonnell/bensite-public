@@ -14,7 +14,7 @@
                 <div class="col-md-11 p-1">
                     
                     <h2>How it works</h2>
-                    <p>This project is a weather forecast accuracy tracker that compares {{api_count}} major weather APIs to determine which provides the most reliable predictions.</p>
+                    <p>This project is a weather forecast accuracy tracker that compares {{api_count}} weather APIs to determine which provides the most reliable predictions.</p>
                     <p>
                         <strong>Data Collection:</strong> An automated hourly task collects forecasts from each weather provider for {{location_count}} U.S. cities. Current weather data is pivoted against prior forecasts. <br>
                         <strong>Analysis & Visualization:</strong> The pivoted data is analyzed to determine accuracy and generate the charts below. <br>
@@ -57,6 +57,26 @@
                         </div>
                         <div id="ma_container"></div>
                     </div>
+
+                    <div style="position: relative; margin-bottom: 30px;">
+                        <div class="chart-controls" style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                            <label for="hoursDropdownPP" style="margin: 0; font-size: 0.9em; font-weight: 500;">Hours Before:</label>
+                            <select id="hoursDropdownPP" class="form-select form-select-sm" style="width: auto;">
+                                <option value="1" selected>1 Hour</option>
+                                <option value="6">6 Hours</option>
+                                <option value="12">12 Hours</option>
+                                <option value="24">24 Hours</option>
+                            </select>
+                            <label for="pivotVersionPP" style="margin: 0; margin-left: 15px; font-size: 0.9em; font-weight: 500;">Pivot Version:</label>
+                            <select id="pivotVersionPP" class="form-select form-select-sm" style="width: auto;">
+                                <option value="1">v1</option>
+                                <option value="2">v2</option>
+                            </select>
+                        </div>
+                        <div id="pp_container"></div>
+                    </div>
+
+
 
                     <h2>Precipitation</h2>
                     <h2>Attribution</h2>
@@ -151,7 +171,6 @@
       }
     });
 
-    // Listen for theme changes and redraw charts
     document.addEventListener('themeChanged', function(event) {
       console.log("themeChanged event received, redrawing HBC chart");
       applyHighchartsTheme();
@@ -268,5 +287,116 @@
         updateChart(currentHoursBefore, currentMAVersion);
     });
     </script>
+
+    <script>
+    let pp_chart = null;
+    const pprob_series_v1_1h = {{ pprob_series_v1_1h|safe }};
+    const pprob_series_v1_6h = {{ pprob_series_v1_6h|safe }};
+    const pprob_series_v1_12h = {{ pprob_series_v1_12h|safe }};
+    const pprob_series_v1_24h = {{ pprob_series_v1_24h|safe }};
+    const pprob_series_v2_1h = {{ pprob_series_v2_1h|safe }};
+    const pprob_series_v2_6h = {{ pprob_series_v2_6h|safe }};
+    const pprob_series_v2_12h = {{ pprob_series_v2_12h|safe }};
+    const pprob_series_v2_24h = {{ pprob_series_v2_24h|safe }};
+    const pprob_categories = {{ pprob_categories|safe }};
+
+    const datasets = {
+        1: {
+            1: pprob_series_v1_1h,
+            6: pprob_series_v1_6h,
+            12: pprob_series_v1_12h,
+            24: pprob_series_v1_24h
+        },
+        2: {
+            1: pprob_series_v2_1h,
+            6: pprob_series_v2_6h,
+            12: pprob_series_v2_12h,
+            24: pprob_series_v2_24h
+        }
+    };
+
+    let currentPPHoursBefore = 1;
+    let currentPPVersion = 1;
+
+    function renderPPChart(hoursbefore, version) {
+      
+      const selectedSeries = datasets[version][hoursbefore];
+      
+      if (pp_chart) {
+        pp_chart.destroy();
+      }
+      pp_chart = Highcharts.chart('pp_container', {
+        chart: {
+          type: 'line'
+        },
+        title: {
+          text: 'Precipitation Probability Calibration'
+        },
+        xAxis: {
+          title: {
+            text: 'Forecasted Probability (%)'
+          },
+          min: 0,
+          max: 100,
+          tickInterval: 10
+        },
+        yAxis: {
+          title: {
+            text: 'Actual Probability (%)'
+          },
+          min: 0,
+          max: 100,
+          reversed: false
+        },
+        plotOptions: {
+            line: {
+                marker: {
+                    enabled: false
+                }
+            }
+        },
+        series: selectedSeries
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log("DOMContentLoaded: Initializing PP chart");
+        
+        const pp_dropdown = document.getElementById('hoursDropdownPP');
+        const versionDropdown = document.getElementById('pivotVersionPP');
+        const pp_container = document.getElementById('pp_container');
+
+        if (pp_dropdown && versionDropdown && pp_container) {
+            renderPPChart(parseInt(pp_dropdown.value), currentPPVersion);
+
+            pp_dropdown.addEventListener('change', function () {
+                console.log("PP Dropdown value changed to:", this.value);
+                currentPPHoursBefore = parseInt(this.value);
+                renderPPChart(currentPPHoursBefore, currentPPVersion);
+            });
+            
+            versionDropdown.addEventListener('change', function () {
+                console.log("PP version changed to:", this.value);
+                currentPPVersion = parseInt(this.value);
+                renderPPChart(currentPPHoursBefore, currentPPVersion);
+            });
+        } else {
+            console.error("PP Required elements not found:", {
+                dropdown: !!pp_dropdown,
+                versionDropdown: !!versionDropdown,
+                container: !!pp_container
+            });
+        }
+    });
+
+    document.addEventListener('themeChanged', function() {
+        console.log("themeChanged event received, redrawing PP chart");
+        renderPPChart(currentPPHoursBefore, currentPPVersion);
+    });
+
+    </script>
+
+
+    
 </main>
 {% endblock %}

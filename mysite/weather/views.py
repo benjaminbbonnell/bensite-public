@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import HoursBeforeChart, WeatherServices, SiteStats, MonthlyAverageChart
+from .models import HoursBeforeChart, WeatherServices, SiteStats, MonthlyAverageChart, PrecipProbChart
 from decimal import Decimal
 from num2words import num2words
 import calendar
@@ -19,6 +19,7 @@ def index(request):
 
     hbc_data = HoursBeforeChart.objects.values('api_name', 'avg_dif', 'hoursbefore', 'signed_dif', 'forecast_pivot_version').order_by('hoursbefore', 'api_name')
     ma_data = MonthlyAverageChart.objects.values('api_name', 'month', 'avg_dif', 'hoursbefore', 'forecast_pivot_version').order_by('api_name', 'month', 'hoursbefore')
+    pprob_data = PrecipProbChart.objects.values('api_name', 'hoursbefore', 'forecast_prob_bucket', 'actual_percentage', 'forecast_pivot_version')
     api_names = WeatherServices.objects.values_list('api_ref_name', 'api_display_name')
     api_name_dict = {item[0]: item[1] for item in api_names}
 
@@ -42,6 +43,29 @@ def index(request):
     hbc_series_abs_v2 = hbc_series_helper(hbc_data, True, version=2)
     hbc_series_signed_v2 = hbc_series_helper(hbc_data, False, version=2)
 
+    def precip_prob_helper(chart_data, hoursbefore, version=1):
+        chart_data = chart_data.filter(forecast_pivot_version=version)
+        precip_prob_series_data = {}
+        for item in chart_data:
+            if item['hoursbefore'] == hoursbefore:
+                if item['api_name'] not in precip_prob_series_data:
+                    precip_prob_series_data[item['api_name']] = []
+                precip_prob_series_data[item['api_name']].append([float(item['forecast_prob_bucket']), float(item['actual_percentage'])])
+        
+        for api_name in precip_prob_series_data:
+            precip_prob_series_data[api_name].sort(key=lambda point: point[0])
+        
+        return [{'name': api_name_dict.get(api_name), 'data': precip_prob_series_data[api_name]} for api_name in precip_prob_series_data]
+
+    pprob_categories = sorted(set(float(item['forecast_prob_bucket']) for item in pprob_data))
+    pprob_series_v1_1h = precip_prob_helper(pprob_data, 1)
+    pprob_series_v1_6h = precip_prob_helper(pprob_data, 6)
+    pprob_series_v1_12h = precip_prob_helper(pprob_data, 12)
+    pprob_series_v1_24h = precip_prob_helper(pprob_data, 24)
+    pprob_series_v2_1h = precip_prob_helper(pprob_data, 1, version=2)
+    pprob_series_v2_6h = precip_prob_helper(pprob_data, 6, version=2)
+    pprob_series_v2_12h = precip_prob_helper(pprob_data, 12, version=2)
+    pprob_series_v2_24h = precip_prob_helper(pprob_data, 24, version=2)
 
     def convert_ma_format(month, hoursbefore):
         return f"{calendar.month_name[month]} - {hoursbefore} hours before"
@@ -84,6 +108,15 @@ def index(request):
         'ma_categories' : ma_categories,
         'ma_series_v1' : ma_series_v1,
         'ma_series_v2' : ma_series_v2,
+        'pprob_categories' : pprob_categories,
+        'pprob_series_v1_1h' : pprob_series_v1_1h,
+        'pprob_series_v1_6h' : pprob_series_v1_6h,
+        'pprob_series_v1_12h' : pprob_series_v1_12h,
+        'pprob_series_v1_24h' : pprob_series_v1_24h,
+        'pprob_series_v2_1h' : pprob_series_v2_1h,
+        'pprob_series_v2_6h' : pprob_series_v2_6h,
+        'pprob_series_v2_12h' : pprob_series_v2_12h,
+        'pprob_series_v2_24h' : pprob_series_v2_24h,
         'forecastcount': total_forecast_count,
         'api_count': api_count_formatted,
         'location_count': location_count

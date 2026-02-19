@@ -51,9 +51,6 @@ def getservices():
     return services
 
 def weathercomcollect(city_id, city, statecode, latitude, longitude, days):
-    #3 day forecast
-
-
     try:
         api_url = f"http://api.weatherapi.com/v1/forecast.json?key={weatherapicom_apikey}&q={latitude},{longitude}&days={days}&aqi=no&alerts=no"
 
