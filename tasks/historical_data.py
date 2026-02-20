@@ -39,8 +39,8 @@ def googlecollect(city_id, city_name, statecode, latitude, longitude):
         historical_data = []
 
         temp_f = data['historyHours'][0]['temperature']['degrees']
-        precip_in = data['historyHours'][0]['precipitation']['probability']['percent']
-        precip_prob = data['historyHours'][0]['precipitation']['qpf']['quantity']
+        precip_prob = data['historyHours'][0]['precipitation']['probability']['percent']
+        precip_in = data['historyHours'][0]['precipitation']['qpf']['quantity']
 
         instance = HistoricalData.objects.create(city_id=city_id, api_name="google", city_name=city_name, time_epoch=last_hour_time, temp_f=temp_f, precip_in=precip_in, precip_prob=precip_prob)
 
