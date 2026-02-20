@@ -78,7 +78,7 @@ queries = {
             forecast_counts.api_name, 
             forecast_counts.hoursbefore, 
             forecast_counts.forecast_prob_bucket, 
-            ROUND(COALESCE(actual_counts.actual_count::numeric / forecast_counts.forecasted_count::numeric * 100, 0), 2) AS actual_percentage,	
+            ROUND(COALESCE(actual_counts.actual_count::numeric / NULLIF(forecast_counts.forecasted_count::numeric, 0) * 100, 0), 2) AS actual_percentage,	
             forecast_counts.forecasted_count,
             COALESCE(actual_counts.actual_count, 0) AS actual_count,
             2 AS forecast_pivot_version
