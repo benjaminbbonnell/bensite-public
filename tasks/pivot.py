@@ -85,10 +85,10 @@ queries = {
             weather_historicaldata.temp_f AS currenttemp,
             weather_forecastdata.temp_f,
             (weather_forecastdata.forecast_epoch - weather_forecastdata.forecast_made) / 3600 AS hoursbefore,
-            weather_forecastdata.precip_in AS forecasted_precip_in, 
-            weather_forecastdata.precip_prob AS forecasted_precip_prob, 
-            weather_forecastdata.precip_in AS current_precip_in,
-            weather_historicaldata.precip_prob AS current_precip_prob
+            weather_historicaldata.precip_in AS current_precip_in,
+            weather_historicaldata.precip_prob AS current_precip_prob,
+            weather_forecastdata.precip_in AS forecasted_precip_in,
+            weather_forecastdata.precip_prob AS forecasted_precip_prob
 
         FROM
             weather_forecastdata
