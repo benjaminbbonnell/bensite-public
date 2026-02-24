@@ -4,8 +4,6 @@ from decimal import Decimal
 from num2words import num2words
 import calendar
 
-# Create your views here.
-
 def index(request):
 
     tfc_obj = SiteStats.objects.get(name="total_forecast_count")

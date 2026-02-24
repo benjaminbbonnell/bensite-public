@@ -25,9 +25,8 @@ def getlocations():
     return locations
     connection.close()
 
-last_hour_time = (round((int(time.time())) // 3600) * 3600) - 3600 #subtract 3600 to get previous hours epoch
+last_hour_time = (round((int(time.time())) // 3600) * 3600) - 3600 #Subtract 3600 to get previous hours epoch
 
-#historical data: city_id, city_name, time_epoch, temp_f, current_precip_in, current_precip_prob
 
 def googlecollect(city_id, city_name, statecode, latitude, longitude):
     try:

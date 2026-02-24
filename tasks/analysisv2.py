@@ -3,7 +3,6 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-# Load .env from the mysite directory
 env_path = Path(__file__).resolve().parent.parent / 'mysite' / '.env'
 load_dotenv(dotenv_path=env_path)
 
@@ -14,7 +13,7 @@ sqlpassword = os.environ.get('SQLPASSWORD')
 sqlport = os.environ.get('SQLPORT')
 
 
-# this should probably be moved to the view at some point but the processing to do it there may not be worth it
+#This should probably be moved to the view at some point but the processing to do it there may not be worth it
 
 queries = {
     "hoursbeforechart": '''

@@ -8,7 +8,6 @@ from django.db import transaction
 from django.conf import settings
 import psycopg2
 
-# Setup Django
 project_root = Path(__file__).resolve().parent.parent / 'mysite'
 sys.path.insert(0, str(project_root))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
@@ -71,7 +70,7 @@ def delete_old_forecasts(threshold):
         conn.close()
 
 def api_stats():
-    total_api_count = {'stat': WeatherServices.objects.count() - 1} #subtract 1 to exclude ensemble from api number
+    total_api_count = {'stat': WeatherServices.objects.count() - 1}
     try:
         with transaction.atomic():
             SiteStats.objects.update_or_create(
