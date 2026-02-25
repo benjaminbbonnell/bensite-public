@@ -4,12 +4,12 @@ import django
 from datetime import datetime
 from pathlib import Path
 
-# Setup Django
 project_root = Path(__file__).resolve().parent.parent / 'mysite'
 sys.path.insert(0, str(project_root))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
 django.setup()
 
+# flake8: noqa: E402
 from collector import main as collector_main
 from pivot import main as pivot_main
 from analysis import main as analysis_main

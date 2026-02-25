@@ -13,6 +13,7 @@ sys.path.insert(0, str(project_root))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
 django.setup()
 
+# flake8: noqa: E402
 from weather.models import ForecastPivot, SiteStats, WeatherServices, Locations
 
 sqldbname = os.environ.get('SQLDBNAME')
@@ -24,7 +25,6 @@ sqlport = os.environ.get('SQLPORT')
 threshold_setting = settings.OLD_FORECAST_THRESHOLD
 current_time = round((int(time.time())) / 3600) * 3600
 threshold_epoch = current_time - (threshold_setting * 86400)
-
 
 def total_forecasts():
     total_forecast_count = {'stat' : ForecastPivot.objects.count()}

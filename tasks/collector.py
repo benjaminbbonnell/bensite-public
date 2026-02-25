@@ -20,6 +20,7 @@ sys.path.insert(0, str(project_root))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
 django.setup()
 
+# flake8: noqa: E402
 from weather.models import WeatherServices, Locations
 
 project_folder = os.path.expanduser('~/mysite/.env')

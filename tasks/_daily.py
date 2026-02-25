@@ -1,8 +1,3 @@
-"""
-Daily tasks - runs cleanup and updates site stats.
-Scheduled to run once per day via python anywhere task scheduler.
-"""
-
 import os
 import sys
 import django
@@ -15,6 +10,7 @@ sys.path.insert(0, str(project_root))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
 django.setup()
 
+# flake8: noqa: E402
 from cleanup import main as cleanup_main
 
 def run_daily():
