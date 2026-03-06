@@ -124,6 +124,13 @@ class PrecipProbChart(models.Model):
     class Meta:
         verbose_name_plural = "Precipitation Probability Chart"
 
+class CalibrationChart(models.Model):
+    api_name = models.CharField(max_length=100)
+    hoursbefore = models.IntegerField(null=True)
+    calibration_stat = models.IntegerField(null=True)
+    forecast_pivot_version = models.IntegerField(null=True)
+
+
 class SiteStats(models.Model):
     name = models.CharField(max_length=100, primary_key=True)
     stat = models.DecimalField(max_digits=100, decimal_places=2, null=True)

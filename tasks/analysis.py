@@ -13,7 +13,7 @@ sqlpassword = os.environ.get('SQLPASSWORD')
 sqlport = os.environ.get('SQLPORT')
 
 
-# this should probably be moved to the view at some point but the processing to do it there may not be worth it
+# to-do: merge analysis v1 and v2 with UNION
 
 queries = {
     "hoursbeforechart": '''
@@ -95,7 +95,61 @@ queries = {
             forecast_counts.api_name = actual_counts.api_name
             AND forecast_counts.hoursbefore = actual_counts.hoursbefore
             AND forecast_counts.forecast_prob_bucket = actual_counts.forecast_prob_bucket
-        ORDER BY forecast_counts.api_name, forecast_counts.forecast_prob_bucket;'''
+        ORDER BY forecast_counts.api_name, forecast_counts.forecast_prob_bucket;''',
+    "precipcalibrationchart": '''
+        -- Compares average forecasted precipitation probability vs actual precipitation percentage
+        WITH forecasted_percentages AS (
+            SELECT
+                api_name,
+                hoursbefore,
+                AVG(forecasted_precip_prob) AS avg_forecasted_prob
+            FROM weather_forecastpivotv2
+            WHERE forecasted_precip_prob IS NOT NULL
+            GROUP BY
+                api_name, hoursbefore
+        ),
+        total_count AS (
+            SELECT
+                api_name,
+                hoursbefore,
+                COUNT(*) AS total_count
+            FROM weather_forecastpivotv2
+            GROUP BY
+                api_name, hoursbefore
+        ),
+        actual_count AS (
+            SELECT
+                api_name,
+                hoursbefore,
+                COUNT(*) AS actual_count
+            FROM weather_forecastpivotv2
+            WHERE current_precip_in > 0
+            GROUP BY
+                api_name, hoursbefore
+        )
+
+        SELECT 
+            forecasted_percentages.api_name,
+            forecasted_percentages.hoursbefore,
+            ROUND(forecasted_percentages.avg_forecasted_prob, 2) AS avg_forecasted_prob,
+            ROUND(COALESCE((actual_count.actual_count::numeric / total_count.total_count::numeric * 100), 0), 2) AS actual_percentage,
+            total_count.total_count,
+            COALESCE(actual_count.actual_count, 0) AS actual_count
+        FROM 
+            forecasted_percentages
+        LEFT JOIN 
+            total_count 
+        ON 
+            forecasted_percentages.api_name = total_count.api_name
+            AND forecasted_percentages.hoursbefore = total_count.hoursbefore
+        LEFT JOIN
+            actual_count
+        ON 
+            forecasted_percentages.api_name = actual_count.api_name
+            AND forecasted_percentages.hoursbefore = actual_count.hoursbefore
+        ORDER BY
+            forecasted_percentages.api_name,
+            forecasted_percentages.hoursbefore;'''
 }
 
 def execsql(query):
