@@ -55,11 +55,12 @@ def weathercomcollect(city_id, city, statecode, latitude, longitude, days):
     try:
         api_url = f"http://api.weatherapi.com/v1/forecast.json?key={weatherapicom_apikey}&q={latitude},{longitude}&days={days}&aqi=no&alerts=no"
 
+        #adding this so if the response is blank or an exception occurs, the except block won't throw an error
+        responsecode = None
+
         response = requests.get(api_url, timeout=TIMEOUT)
         data = response.json()
         responsecode = response.status_code
-
-        #print("API url is: " + api_url)
 
         forecasts = []
 
@@ -92,11 +93,11 @@ def weathercomcollect(city_id, city, statecode, latitude, longitude, days):
 def visualcrossingcollect(city_id, city, statecode, latitude, longitude, days):
     try:
         api_url = f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{latitude}%2C%20{longitude}?unitGroup=us&elements=datetime%2CdatetimeEpoch%2Cname%2Csnow%2Clatitude%2Clongitude%2Ctemp%2Cfeelslike%2Cprecip%2Cprecipprob%2Cpreciptype%2Cconditions&include=hours%2Cfcst&key={visualcrossing_apikey}&contentType=json"
+        
+        responsecode = None
         response = requests.get(api_url, timeout=TIMEOUT)
         data = response.json()
         responsecode = response.status_code
-
-        #print("API url is: " + api_url)
 
         forecasts = []
 
@@ -134,11 +135,11 @@ def tomorrowiocollect(city_id, city, statecode, latitude, longitude, days):
     #the api should be returning a precipitation type but it's not
     try:
         api_url = f"https://api.tomorrow.io/v4/weather/forecast?location={latitude},{longitude}&timesteps=1h&units=imperial&apikey={tomorrowio_apikey}"
+
+        responsecode = None
         response = requests.get(api_url, timeout=TIMEOUT)
         data = response.json()
         responsecode = response.status_code
-
-        #print("API url is: " + api_url)
 
         forecasts = []
 
@@ -178,12 +179,11 @@ def openmeteocollect(city_id, city, statecode, latitude, longitude, days):
 
     try:
         api_url = f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,rain,snowfall&timezone=GMT&temperature_unit=fahrenheit&precipitation_unit=inch&forecast_days={days}"
+        
+        responsecode = None
         response = requests.get(api_url, timeout=TIMEOUT)
         data = response.json()
         responsecode = response.status_code
-        
-        #print("API url is: " + api_url)
-
 
         time_list = data['hourly']['time']
         temperature_list = data['hourly']['temperature_2m']
