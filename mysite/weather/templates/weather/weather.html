@@ -13,16 +13,27 @@
                     <nav id="toc" data-toggle="toc" class="sticky-top"></nav>
                 </div>
                 <div class="col-md-11 p-1">
-                    
+                    <div class="row">
                     <h2>How it works</h2>
-                    <p>This project is a weather forecast accuracy tracker that compares {{api_count}} weather APIs to determine which provides the most reliable predictions.</p>
-                    <p>
-                        <strong>Data Collection:</strong> An automated hourly task collects forecasts from each weather provider for {{location_count}} U.S. cities. Current weather data is pivoted against prior forecasts. <br>
-                        <strong>Analysis & Visualization:</strong> The pivoted data is analyzed to determine accuracy and generate the charts below. <br>
-                        <strong>Scale:</strong> The database currently contains {{forecastcount}} individual forecast records, with new forecasts added each hour. <br>
-                        <strong>Tech Stack:</strong> Forecast collection and analysis is a blend of Python and SQL. The site is written in Django with a Bootstrap frontend. <br>
-                    </p>
-
+                        <div class="col-md-8 p-1">
+                            <p>This project is a weather forecast accuracy tracker that compares {{api_count}} weather APIs to determine which provides the most reliable predictions.</p>
+                            <p>
+                                <strong>Data Collection:</strong> An automated hourly task collects forecasts from each weather provider for {{location_count}} U.S. cities. Current weather data is pivoted against prior forecasts. <br>
+                                <strong>Analysis & Visualization:</strong> The pivoted data is analyzed to determine accuracy and generate the charts below. <br>
+                                <strong>Scale:</strong> The database currently contains {{forecastcount}} individual forecast records, with new forecasts added each hour. <br>
+                                <strong>Tech Stack:</strong> Forecast collection and analysis is a blend of Python and SQL. The site is written in Django with a Bootstrap frontend. <br>
+                            </p>
+                        </div>
+                        <div class="col-md-3 p-1">
+                            <div class="card">
+                                <div class="card-header bg-primary text-dark">Pivot Version</div>
+                                <div class="card-body text-center">
+                                    <p class="card-text">When I originally built this project, I worked under the assumption that weather APIs were always correct for the current hour. So I compared forecasts against the same APIs data. </p>
+                                    <p class="card-text">Once I started incorporating precipitation data, I realized that the current hour's precipitation value is still a forecast, not observed data. Forecast Pivot v2 fixes this by using Google's historical weather API to compare forecasts against the previous hours observed temperature and precipitation.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <h2>Temperature</h2>
                     
                     <div style="position: relative; margin-bottom: 30px;">
