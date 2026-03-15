@@ -21,4 +21,5 @@ urlpatterns = [
     path('', include('bensite.urls')),
     path('admin/', admin.site.urls),
     path('weather/', include("weather.urls")),
+    path('typing_test/', include("typing_test.urls")),
 ]

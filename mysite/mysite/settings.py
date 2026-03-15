@@ -39,6 +39,7 @@ ALLOWED_HOSTS = ['www.benjaminbbonnell.com', '127.0.0.1', 'localhost']
 INSTALLED_APPS = [
     'bensite.apps.BensiteConfig',
     'weather.apps.WeatherConfig',
+    'typing_test.apps.TypingTestConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

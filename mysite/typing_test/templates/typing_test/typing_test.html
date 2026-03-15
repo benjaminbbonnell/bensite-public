@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<p style="text-align: center;">The string you need to type is: <span id="test_string">.</p>
+<p style="text-align: center;">The current string is: <span id="typed_string"></span></p>
+
+
+
+<script>
+let test_string = 'Hello World';
+document.getElementById("test_string").innerHTML = test_string;
+let test_string_words = test_string.split(" ");
+
+let typed_string = '';
+let typed_string_words = [];
+
+document.addEventListener('keydown', (event) => {
+    
+
+    const isAlphanumeric = /^[a-zA-Z0-9 ]$/.test(event.key);
+
+    if (isAlphanumeric) {
+        typed_string += event.key;
+    }
+
+    if (event.key === "Backspace") {
+        typed_string = typed_string.slice(0, -1)
+    }
+
+
+    document.getElementById("typed_string").innerHTML = typed_string
+    typed_string_words = typed_string.split(" ");
+
+    console.log(typed_string_words)
+
+});
+</script>
+
+
+
+</main>
+{% endblock %}
