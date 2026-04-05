@@ -2,15 +2,17 @@
 {% load static %}
 {% block content %}
 
-<p style="text-align: center;">The string you need to type is: <span id="test_string">.</p>
-<p style="text-align: center;">The current string is: <span id="typed_string"></span></p>
+<p style="text-align: center;">The string you need to type is: <span id="test_string"></span></p>
+<p style="text-align: center;">The current string is: <span id="result_string"></span></p>
 
 
 
 <script>
-let test_string = 'Hello World';
-document.getElementById("test_string").innerHTML = test_string;
-let test_string_words = test_string.split(" ");
+let testText = "{{ test_string|escapejs }}";
+//let testText = "hello world"
+
+document.getElementById("test_string").innerHTML = testText;
+let test_string_words = testText.split(" ");
 
 let typed_string = '';
 let typed_string_words = [];
@@ -28,11 +30,19 @@ document.addEventListener('keydown', (event) => {
         typed_string = typed_string.slice(0, -1)
     }
 
+    let result_string = "";
+    // loop over each string, if a space character is detected ignore the rest of the word and go to the next word, 
+    for (let i=0; i < testText.length; i++) {
+        const char1 = testText[i] || ''; 
+        const char2 = typed_string[i] || '';
 
-    document.getElementById("typed_string").innerHTML = typed_string
-    typed_string_words = typed_string.split(" ");
-
-    console.log(typed_string_words)
+        if (char1 === char2){
+            result_string += `<span>${char2}</span>`;
+        } else {
+            result_string += `<span class="highlight-red">${char2}</span>`;
+        }
+    }
+    document.getElementById("result_string").innerHTML = result_string
 
 });
 </script>
