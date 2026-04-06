@@ -2,52 +2,94 @@
 {% load static %}
 {% block content %}
 
-<p style="text-align: center;">The string you need to type is: <span id="test_string"></span></p>
-<p style="text-align: center;">The current string is: <span id="result_string"></span></p>
+<style>
+    main {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-grow: 1;
+        font-size: 28px;
+    }
+        .not-typed-grey {
+            color: rgb(202, 135, 135);
+        }
+        .correct-white {
+            color: rgb(186, 163, 163);
+        }
+        .incorrect-red {
+            color: red;
+        }
+</style>
 
+<div class="d-flex justify-content-center align-items-center">
+    <div class="row align-items-center g-8">
+        <div class="col-md-2 p-1">
+        </div>
+        <div class="col-md-8 p-1">
+            <p style="text-align: center;"><span id="test_string"></span></p>
+        </div>
+        <div class="col-md-2 p-1">
+        </div>
+    </div>
+</div>
 
 
 <script>
-let testText = "{{ test_string|escapejs }}";
-//let testText = "hello world"
 
-document.getElementById("test_string").innerHTML = testText;
-let test_string_words = testText.split(" ");
+document.addEventListener('DOMContentLoaded', (event) => {
 
-let typed_string = '';
-let typed_string_words = [];
-
-document.addEventListener('keydown', (event) => {
-    
-
-    const isAlphanumeric = /^[a-zA-Z0-9 ]$/.test(event.key);
-
-    if (isAlphanumeric) {
-        typed_string += event.key;
+    for (let i=0; i < test_text_words.length; i++) {
+        const word1 = test_text_words[i]
+        result_string += `<span class="not-typed-grey">${word1} </span>`;
     }
 
-    if (event.key === "Backspace") {
-        typed_string = typed_string.slice(0, -1)
-    }
+    document.getElementById("test_string").innerHTML = result_string;
 
-    let result_string = "";
-    // loop over each string, if a space character is detected ignore the rest of the word and go to the next word, 
-    for (let i=0; i < testText.length; i++) {
-        const char1 = testText[i] || ''; 
-        const char2 = typed_string[i] || '';
-
-        if (char1 === char2){
-            result_string += `<span>${char2}</span>`;
-        } else {
-            result_string += `<span class="highlight-red">${char2}</span>`;
-        }
-    }
-    document.getElementById("result_string").innerHTML = result_string
 
 });
+
+let testText = "{{ test_string|escapejs }}";
+
+let test_text_words = testText.split(" ");
+
+let current_word = 0;
+let current_word_position = 0;
+
+let completed_words = []
+
+let result_string = "";
+
+
+document.addEventListener('keydown', (event) => {
+
+    const isAlphanumeric = /^[a-zA-Z0-9]$/.test(event.key);
+
+    console.log("current position is", current_word, current_word_position)
+    console.log(event.key)
+    if (isAlphanumeric) {
+        if (test_text_words[current_word][current_word_position] == event.key) {
+            result_string += `<span class="correct-white">${event.key}</span>`;
+            console.log("correct")
+        }
+        if (test_text_words[current_word][current_word_position] != event.key) {
+            result_string += `<span class="incorrect-red">${event.key}</span>`;
+            console.log("incorrect")
+        }
+        current_word_position += 1;
+    }
+
+    if (event.key === " " && current_word_position != 0) {
+        current_word += 1;
+        current_word_position = 0;
+        console.log("")
+    }
+
+});
+
 </script>
 
 
 
 </main>
 {% endblock %}
+
