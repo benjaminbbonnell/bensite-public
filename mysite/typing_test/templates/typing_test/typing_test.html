@@ -23,9 +23,10 @@
         display: inline-block;
         width: 2px;
         height: 1.2em;
+        position: absolute;
         background-color: white;
         animation: blink 1s infinite;
-        margin: 0 2px;
+        margin-right: -2px;  /* This prevents it from pushing characters */
     }
 
 @keyframes blink {
@@ -66,12 +67,94 @@ document.addEventListener('DOMContentLoaded', (event) => {
 let testText = "{{ test_string|escapejs }}";
 
 let test_text_words = testText.split(" ");
+let completed_words = [];
 
 let current_word_index = 0;
 let current_word_char_index = 0;
 
 let current_typed_word = ""
-let completed_words = []
+
+
+//-1 incorrect, 0 untyped, 1 correct
+//returns an array of arrays indicating if letter in word is correct or not
+
+function checkWord(typed_words_array, test_words_array, current_word_number, current_word_position) {
+    let result_array = [];
+
+    //handle typed words
+    for (let i=0; i < typed_words_array.length; i++) {
+        let test_word = test_words_array[i];
+        let typed_word = typed_words_array[i];
+
+        let test_word_len = test_words_array[i].length;
+        let typed_word_len = typed_words_array[i].length;
+        let max_word_array_len = Math.max(test_word_len, typed_word_len);
+
+        let word_result_array = [];
+
+        for (let j=0; j<max_word_array_len; j++) {
+            if (j >= test_word_len) {
+                word_result_array.push(-1);
+            }
+            else if (j >= typed_word_len) {
+                word_result_array.push(-1);
+            }
+            else if (test_word[j] == typed_word[j]) {
+                word_result_array.push(1);
+            }
+            else if (test_word[j] != typed_word[j]) {
+                word_result_array.push(-1);
+            }
+        }
+        result_array.push(word_result_array);
+    }
+
+    //handle current words
+
+    let current_word_result_array = [];
+
+    let curr_test_word = test_words_array[current_word_number];
+    let curr_typed_word = current_typed_word;
+
+    let curr_test_word_len = curr_test_word.length;
+    let curr_typed_word_len = curr_typed_word.length;
+
+    let max_curr_word_array_len = Math.max(curr_test_word.length, curr_typed_word.length);
+
+    for (let i=0; i<max_curr_word_array_len; i++) {
+            if (i >= curr_test_word_len) {
+                current_word_result_array.push(-1);
+            }
+            else if (i >= curr_typed_word_len) {
+                current_word_result_array.push(0);
+            }
+            else if (curr_test_word[i] == curr_typed_word[i]) {
+                current_word_result_array.push(1);
+            }
+            else if (curr_test_word[i] != curr_typed_word[i]) {
+                current_word_result_array.push(-1);
+            }
+        }
+    result_array.push(current_word_result_array);
+
+    //handle untyped words
+    for (let i=current_word_number+1; i<test_words_array.length; i++) {
+        let test_word = test_words_array[i];
+
+        let word_result_array = [];
+
+        for (let j=0; j<test_word.length; j++) {
+            word_result_array.push(0);
+        }
+        result_array.push(word_result_array);
+    }
+
+    return result_array;
+}
+
+function generateSpan(result_array, typed_words_array, test_words_array, current_typed_word){
+    
+}
 
 document.addEventListener('keydown', (event) => {
 
@@ -96,82 +179,10 @@ document.addEventListener('keydown', (event) => {
         current_word_char_index -= 1;
     }
 
-    // add typed words to beginning
-    for (i=0; i<current_word_index; i++) {
-        current_word = test_text_words[i]
+    key_result_array = checkWord(completed_words, test_text_words, current_word_index, current_word_char_index);
 
-        for(j=0; j<test_text_words[i].length; j++) {  // Use expected word length
-            let expected_char = test_text_words[i][j];
-            let typed_char = completed_words[i][j] || '';  // undefined if not typed
-            
-            if (expected_char === typed_char) {
-                result_string += `<span class="correct-white">${expected_char}</span>`;
-            } else {
-                result_string += `<span class="incorrect-red">${expected_char}</span>`;
-            }
-        }
-        result_string += " "
-    }
-
-
-    //handle current word being typed
-
-    for(i=0; i<current_typed_word.length; i++) {
-        expected_char = test_text_words[current_word_index][i]
-        typed_char = current_typed_word[i]
-
-        if (current_typed_word.length > test_text_words[current_word_index].length) {
-            result_string += `<span class="incorrect-red">${typed_char}</span>`;
-        }
-        else if (expected_char == typed_char) {
-            result_string += `<span class="correct-white">${expected_char}</span>`;
-        }
-        else {
-            result_string += `<span class="incorrect-red">${expected_char}</span>`;
-        }
-    }
-    result_string += `<span class="cursor"></span>`;
-
-
-    for (i=current_word_char_index; i<test_text_words[current_word_index].length; i++) {
-        char = test_text_words[current_word_index][i]
-        result_string += `<span class="not-typed-grey">${char}</span>`;
-
-    }
     
-    for (j=0; j<current_word_char_index.length; j++) {
-        char = completed_words[i][j]
-
-        if (test_text_words[i][j] == completed_words[i][j]) {
-            result_string += `<span class="correct-white">${char}</span>`;
-        }
-
-        if (test_text_words[i][j] != completed_words[i][j]) {
-            result_string += `<span class="incorrect-red">${char}</span>`;
-        }
-    }
-
-    result_string += " "
-
-
-
-    //add untyped words on to the end
-    for (i=current_word_index+1; i<test_text_words.length; i++) {
-        current_word = test_text_words[i]
-        for(j=0; j<current_word.length; j++) {
-            char = test_text_words[i][j]
-            result_string += `<span class="not-typed-grey">${char}</span>`;
-        }
-        result_string += " "
-    }
-
-
-    console.log(current_typed_word)
-    console.log(completed_words)
-    console.log("current word index=", current_word_index)
-    console.log("current typed word index=", current_word_char_index)
-
-    document.getElementById("test_string").innerHTML = result_string;
+    
 
 });
 
