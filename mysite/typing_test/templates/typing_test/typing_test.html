@@ -50,20 +50,6 @@
 
 <script>
 
-document.addEventListener('DOMContentLoaded', (event) => {
-
-    opening_string = ""
-
-    for (let i=0; i < test_text_words.length; i++) {
-        const word1 = test_text_words[i]
-        opening_string += `<span class="not-typed-grey">${word1} </span>`;
-    }
-
-    document.getElementById("test_string").innerHTML = opening_string;
-
-
-});
-
 let testText = "{{ test_string|escapejs }}";
 
 let test_text_words = testText.split(" ");
@@ -80,6 +66,7 @@ let current_typed_word = ""
 
 function checkWord(typed_words_array, test_words_array, current_word_number, current_word_position) {
     let result_array = [];
+    let letters_array = [];
 
     //handle typed words
     for (let i=0; i < typed_words_array.length; i++) {
@@ -91,27 +78,34 @@ function checkWord(typed_words_array, test_words_array, current_word_number, cur
         let max_word_array_len = Math.max(test_word_len, typed_word_len);
 
         let word_result_array = [];
+        let word_letters_array = [];
 
         for (let j=0; j<max_word_array_len; j++) {
             if (j >= test_word_len) {
                 word_result_array.push(-1);
+                word_letters_array.push(typed_word[j]);
             }
             else if (j >= typed_word_len) {
                 word_result_array.push(-1);
+                word_letters_array.push(test_word[j]);
             }
             else if (test_word[j] == typed_word[j]) {
                 word_result_array.push(1);
+                word_letters_array.push(test_word[j]);
             }
             else if (test_word[j] != typed_word[j]) {
                 word_result_array.push(-1);
+                word_letters_array.push(test_word[j]);
             }
         }
         result_array.push(word_result_array);
+        letters_array.push(word_letters_array);
     }
 
     //handle current words
 
     let current_word_result_array = [];
+    let current_word_letters_array = [];
 
     let curr_test_word = test_words_array[current_word_number];
     let curr_typed_word = current_typed_word;
@@ -124,37 +118,84 @@ function checkWord(typed_words_array, test_words_array, current_word_number, cur
     for (let i=0; i<max_curr_word_array_len; i++) {
             if (i >= curr_test_word_len) {
                 current_word_result_array.push(-1);
+                current_word_letters_array.push(curr_typed_word[i]);
             }
             else if (i >= curr_typed_word_len) {
                 current_word_result_array.push(0);
+                current_word_letters_array.push(curr_test_word[i]);
             }
             else if (curr_test_word[i] == curr_typed_word[i]) {
                 current_word_result_array.push(1);
+                current_word_letters_array.push(curr_test_word[i]);
             }
             else if (curr_test_word[i] != curr_typed_word[i]) {
                 current_word_result_array.push(-1);
+                current_word_letters_array.push(curr_test_word[i]);
             }
         }
     result_array.push(current_word_result_array);
+    letters_array.push(current_word_letters_array);
 
     //handle untyped words
     for (let i=current_word_number+1; i<test_words_array.length; i++) {
         let test_word = test_words_array[i];
 
         let word_result_array = [];
+        let word_letters_result_array = [];
 
         for (let j=0; j<test_word.length; j++) {
             word_result_array.push(0);
+            word_letters_result_array.push(test_word[j]);
         }
         result_array.push(word_result_array);
+        letters_array.push(word_letters_result_array);
     }
 
-    return result_array;
+    return [letters_array, result_array];
 }
 
-function generateSpan(result_array, typed_words_array, test_words_array, current_typed_word){
-    
+function generateSpan(letters_array, result_array, current_word_number, current_word_position){
+
+    let result_display_string = ""
+    for (let i=0; i<result_array.length; i++) {
+        for (let j=0; j < result_array[i].length; j++) {
+            let letter = letters_array[i][j]
+
+            if (i == current_word_number && j == current_word_position) {
+                result_display_string += `<span class="cursor"></span>`;
+            }
+
+            if (result_array[i][j] == -1) {
+                result_display_string += `<span class="incorrect-red">${letter}</span>`;
+            }
+            else if (result_array[i][j] == 0) {
+                result_display_string += `<span class="not-typed-grey">${letter}</span>`;
+            }
+            else if (result_array[i][j] == 1) {
+                result_display_string += `<span class="correct-white">${letter}</span>`;
+            }
+        }
+        
+        // Show cursor at end of current word if position is at or past word length
+        if (i == current_word_number && current_word_position >= result_array[i].length) {
+            result_display_string += `<span class="cursor"></span>`;
+        }
+        
+        result_display_string += `<span class="correct-white"> </span>`;
+    }
+    return result_display_string
 }
+
+document.addEventListener('DOMContentLoaded', (event) => {
+
+    check_word_array = checkWord(completed_words, test_text_words, current_word_index, current_word_char_index);
+    key_result_letters = check_word_array[0]
+    key_result_string = check_word_array[1]
+
+    document.getElementById("test_string").innerHTML = generateSpan(key_result_letters, key_result_string, current_word_index, current_word_char_index)
+
+
+});
 
 document.addEventListener('keydown', (event) => {
 
@@ -179,9 +220,11 @@ document.addEventListener('keydown', (event) => {
         current_word_char_index -= 1;
     }
 
-    key_result_array = checkWord(completed_words, test_text_words, current_word_index, current_word_char_index);
+    check_word_array = checkWord(completed_words, test_text_words, current_word_index, current_word_char_index);
+    key_result_letters = check_word_array[0]
+    key_result_string = check_word_array[1]
 
-    
+    document.getElementById("test_string").innerHTML = generateSpan(key_result_letters, key_result_string, current_word_index, current_word_char_index)
     
 
 });
