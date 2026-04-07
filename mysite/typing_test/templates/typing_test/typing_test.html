@@ -10,15 +10,28 @@
         flex-grow: 1;
         font-size: 28px;
     }
-        .not-typed-grey {
-            color: rgb(202, 135, 135);
-        }
-        .correct-white {
-            color: rgb(186, 163, 163);
-        }
-        .incorrect-red {
-            color: red;
-        }
+    .not-typed-grey {
+        color: rgb(202, 135, 135);
+    }
+    .correct-white {
+        color: rgb(186, 163, 163);
+    }
+    .incorrect-red {
+        color: red;
+    }
+    .cursor {
+        display: inline-block;
+        width: 2px;
+        height: 1.2em;
+        background-color: white;
+        animation: blink 1s infinite;
+        margin: 0 2px;
+    }
+
+@keyframes blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+}
 </style>
 
 <div class="d-flex justify-content-center align-items-center">
@@ -38,12 +51,14 @@
 
 document.addEventListener('DOMContentLoaded', (event) => {
 
+    opening_string = ""
+
     for (let i=0; i < test_text_words.length; i++) {
         const word1 = test_text_words[i]
-        result_string += `<span class="not-typed-grey">${word1} </span>`;
+        opening_string += `<span class="not-typed-grey">${word1} </span>`;
     }
 
-    document.getElementById("test_string").innerHTML = result_string;
+    document.getElementById("test_string").innerHTML = opening_string;
 
 
 });
@@ -52,37 +67,111 @@ let testText = "{{ test_string|escapejs }}";
 
 let test_text_words = testText.split(" ");
 
-let current_word = 0;
-let current_word_position = 0;
+let current_word_index = 0;
+let current_word_char_index = 0;
 
+let current_typed_word = ""
 let completed_words = []
-
-let result_string = "";
-
 
 document.addEventListener('keydown', (event) => {
 
+    result_string = "";
+
     const isAlphanumeric = /^[a-zA-Z0-9]$/.test(event.key);
 
-    console.log("current position is", current_word, current_word_position)
-    console.log(event.key)
-    if (isAlphanumeric) {
-        if (test_text_words[current_word][current_word_position] == event.key) {
-            result_string += `<span class="correct-white">${event.key}</span>`;
-            console.log("correct")
-        }
-        if (test_text_words[current_word][current_word_position] != event.key) {
-            result_string += `<span class="incorrect-red">${event.key}</span>`;
-            console.log("incorrect")
-        }
-        current_word_position += 1;
+    if (event.key === " " && current_word_char_index != 0) {
+        completed_words.push(current_typed_word)
+        current_word_index += 1;
+        current_word_char_index = 0;
+        current_typed_word = ""
     }
 
-    if (event.key === " " && current_word_position != 0) {
-        current_word += 1;
-        current_word_position = 0;
-        console.log("")
+    if (isAlphanumeric) {
+        current_typed_word += event.key
+        current_word_char_index += 1;
     }
+
+    if(event.key == "Backspace" && current_word_char_index != 0) {
+        current_typed_word = current_typed_word.slice(0, -1);
+        current_word_char_index -= 1;
+    }
+
+    // add typed words to beginning
+    for (i=0; i<current_word_index; i++) {
+        current_word = test_text_words[i]
+
+        for(j=0; j<test_text_words[i].length; j++) {  // Use expected word length
+            let expected_char = test_text_words[i][j];
+            let typed_char = completed_words[i][j] || '';  // undefined if not typed
+            
+            if (expected_char === typed_char) {
+                result_string += `<span class="correct-white">${expected_char}</span>`;
+            } else {
+                result_string += `<span class="incorrect-red">${expected_char}</span>`;
+            }
+        }
+        result_string += " "
+    }
+
+
+    //handle current word being typed
+
+    for(i=0; i<current_typed_word.length; i++) {
+        expected_char = test_text_words[current_word_index][i]
+        typed_char = current_typed_word[i]
+
+        if (current_typed_word.length > test_text_words[current_word_index].length) {
+            result_string += `<span class="incorrect-red">${typed_char}</span>`;
+        }
+        else if (expected_char == typed_char) {
+            result_string += `<span class="correct-white">${expected_char}</span>`;
+        }
+        else {
+            result_string += `<span class="incorrect-red">${expected_char}</span>`;
+        }
+    }
+    result_string += `<span class="cursor"></span>`;
+
+
+    for (i=current_word_char_index; i<test_text_words[current_word_index].length; i++) {
+        char = test_text_words[current_word_index][i]
+        result_string += `<span class="not-typed-grey">${char}</span>`;
+
+    }
+    
+    for (j=0; j<current_word_char_index.length; j++) {
+        char = completed_words[i][j]
+
+        if (test_text_words[i][j] == completed_words[i][j]) {
+            result_string += `<span class="correct-white">${char}</span>`;
+        }
+
+        if (test_text_words[i][j] != completed_words[i][j]) {
+            result_string += `<span class="incorrect-red">${char}</span>`;
+        }
+    }
+
+    result_string += " "
+
+
+
+    //add untyped words on to the end
+    for (i=current_word_index+1; i<test_text_words.length; i++) {
+        current_word = test_text_words[i]
+        for(j=0; j<current_word.length; j++) {
+            char = test_text_words[i][j]
+            result_string += `<span class="not-typed-grey">${char}</span>`;
+        }
+        result_string += " "
+    }
+
+
+    console.log(current_typed_word)
+    console.log(completed_words)
+    console.log("current word index=", current_word_index)
+    console.log("current typed word index=", current_word_char_index)
+
+    document.getElementById("test_string").innerHTML = result_string;
 
 });
 
