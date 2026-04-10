@@ -6,9 +6,10 @@ from .models import Words
 
 def index(request):
 
-
-    all_ids = Words.objects.values_list('id', flat=True)
-    sample_ids = random.sample(list(all_ids), k=50)
+    word_set_query = request.GET.get('word_set', 'english_standard')
+    filtered_words = Words.objects.filter(word_set_id=word_set_query)
+    all_ids = filtered_words.values_list('id', flat=True)
+    sample_ids = random.sample(list(all_ids), 50)
     random_list = Words.objects.filter(id__in=sample_ids)
     word_list = random_list.values_list("word", flat=True)
     id_to_word = dict(zip([w.id for w in random_list], word_list))

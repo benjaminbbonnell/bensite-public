@@ -13,15 +13,14 @@ django.setup()
 # flake8: noqa: E402
 from typing_test.models import Words, WordSet
 
-word_set_pk = 'english_standard'
+word_set_pk = 'amino_acids'
 word_set = WordSet.objects.get(pk=word_set_pk)
-
-Words.objects.all().delete()
+file_name = 'amino_acids.txt'
 
 def insertwords(word, word_count, word_set):
     Words.objects.create(word=word, word_count=word_count, word_set=word_set)
 
-with open('words.txt', 'r', encoding='utf-8-sig') as file:
+with open(file_name, 'r', encoding='utf-8-sig') as file:
     for line in file:
         word = line.strip().lower()
         word_count = word.count(" ") + 1

@@ -74,15 +74,16 @@ let current_typed_word;
 
 let testActive = true;
 
+let testStarted = false;
+
 let starting_time = 30;
 let time_left;
 
 const timer = setInterval(() => {
-    if (time_left <= 0) {
+    if (time_left <= 0 && testActive) {
         testActive = false;
         calculateScore();
-        clearInterval(timer);
-    } else {
+    } else if (testStarted && testActive) {
         time_left--;
         document.getElementById("timer").innerHTML = time_left;
     }
@@ -250,17 +251,36 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 document.addEventListener('keydown', async (event) => {
 
-    if (!testActive) return;
+
+    const isAlphanumeric = /^[a-zA-Z0-9.\-/]$/.test(event.key);
+
+    if (!testStarted && isAlphanumeric && testActive) {
+        testStarted = true;
+        time_left = starting_time;
+    }
 
     if (event.key === "Tab") {
         event.preventDefault();
         await new_test()
         setupTest()
+        testStarted = false;
+        time_left = starting_time;
+        
+        check_word_array = checkWord(completed_words, test_text_words, current_word_index, current_word_char_index);
+        key_result_letters = check_word_array[0]
+        key_result_scores = check_word_array[1]
+
+        document.getElementById("test_string").innerHTML = generateSpan(key_result_letters, key_result_scores, current_word_index, current_word_char_index)
+        document.getElementById("timer").innerHTML = starting_time;
+        
+        return;
     }
+
+    if (!testActive) return;
 
     result_string = "";
 
-    const isAlphanumeric = /^[a-zA-Z0-9]$/.test(event.key);
+    
 
     if (event.key === " " && current_word_char_index != 0) {
         completed_words.push(current_typed_word)
@@ -295,7 +315,9 @@ function calculateScore() {
 
     final_result_array = check_word_array[1];
 
-    let final_total = final_result_array.flat().reduce((acc, curr) => acc + curr, 0) / 5 / (starting_time / 60);
+    let final_total = Math.round(final_result_array.flat().reduce((acc, curr) => acc + curr, 0) / 5 / (starting_time / 60));
+
+    console.log(final_result_array)
 
     document.getElementById("test_string").innerHTML = `<span>WPM:${final_total}</span>`;
 

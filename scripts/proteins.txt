@@ -1,0 +1,997 @@
+Actin
+Alpha-tubulin
+Beta-tubulin
+Vimentin
+Desmin
+Lamin-A
+Lamin-B1
+Lamin-B2
+Spectrin alpha
+Spectrin beta
+Filamin-A
+Filamin-B
+Filamin-C
+Dystrophin
+Utrophin
+Talin-1
+Talin-2
+Vinculin
+Paxillin
+Zyxin
+Tensin-1
+Tensin-2
+Alpha-actinin-1
+Alpha-actinin-2
+Alpha-actinin-3
+Alpha-actinin-4
+Cofilin-1
+Cofilin-2
+Profilin-1
+Profilin-2
+Gelsolin
+Thymosin beta-4
+Thymosin beta-10
+ARP2
+ARP3
+N-WASP
+WAVE1
+WAVE2
+WAVE3
+Fascin
+Ezrin
+Radixin
+Moesin
+Merlin
+Coronin-1A
+Coronin-1B
+Coronin-1C
+Tropomyosin-1
+Tropomyosin-2
+Tropomyosin-3
+Myosin heavy chain IIa
+Myosin heavy chain IIb
+Myosin heavy chain IIx
+Myosin heavy chain b
+Myosin heavy chain a
+Non-muscle myosin IIA
+Non-muscle myosin IIB
+Non-muscle myosin IIC
+Myosin-V
+Myosin-VI
+Myosin-VII
+Myosin-X
+Myosin-XV
+Kinesin-1 heavy chain
+Kinesin-2
+Kinesin-5
+Kinesin-7
+Kinesin-13
+Kinesin-14
+Dynein heavy chain 1
+Dynein heavy chain 2
+Dynein light chain LC8
+Dynein intermediate chain
+Dynactin-1
+Dynactin-2
+Na⁺/K⁺-ATPase alpha-1
+Na⁺/K⁺-ATPase alpha-2
+Na⁺/K⁺-ATPase alpha-3
+SERCA1
+SERCA2
+PMCA1
+Aquaporin-1
+Aquaporin-2
+Aquaporin-4
+Connexin-43
+Connexin-26
+Connexin-32
+Pannexin-1
+Pannexin-2
+Caveolin-1
+Caveolin-2
+Caveolin-3
+Flotillin-1
+Flotillin-2
+Stomatin
+CD44
+CD47
+CD63
+CD81
+Tetraspanin-7
+EGFR
+ErbB2/HER2
+ErbB3/HER3
+ErbB4/HER4
+FGFR1
+FGFR2
+FGFR3
+FGFR4
+PDGFRA
+PDGFRB
+VEGFR1/FLT1
+VEGFR2/KDR
+VEGFR3/FLT4
+MET proto-oncogene
+RON/MST1R
+AXL receptor
+MERTK
+TYRO3
+RET proto-oncogene
+ALK
+ROS1
+NTRK1/TrkA
+NTRK2/TrkB
+NTRK3/TrkC
+IGF1R
+INSR
+IRR/INSRR
+CSF1R
+KIT
+FLT3
+b1-adrenoceptor
+b2-adrenoceptor
+b3-adrenoceptor
+a1A-adrenoceptor
+a2A-adrenoceptor
+Dopamine receptor D1
+Dopamine receptor D2
+Dopamine receptor D3
+Dopamine receptor D4
+Dopamine receptor D5
+Serotonin receptor 1A
+Serotonin receptor 2A
+Serotonin receptor 3A
+Muscarinic receptor M1
+Muscarinic receptor M2
+Muscarinic receptor M3
+Rhodopsin
+Cone opsin S
+Cone opsin M
+Cone opsin L
+Cannabinoid receptor 1
+Cannabinoid receptor 2
+Opioid receptor mu
+Opioid receptor delta
+Opioid receptor kappa
+Adenosine receptor A1
+Adenosine receptor A2A
+Adenosine receptor A2B
+Adenosine receptor A3
+Histamine receptor H1
+Histamine receptor H2
+Histamine receptor H3
+CXCR4
+CCR5
+CCR2
+Angiotensin receptor 1
+Angiotensin receptor 2
+Bradykinin receptor B1
+Bradykinin receptor B2
+Thrombin receptor PAR1
+Nav1.1
+Nav1.2
+Nav1.3
+Nav1.4
+Nav1.5
+Nav1.6
+Nav1.7
+Nav1.8
+Nav1.9
+Cav1.1
+Cav1.2
+Cav1.3
+Cav2.1
+Cav2.2
+Cav2.3
+Cav3.1
+Cav3.2
+Cav3.3
+Kv1.1
+Kv1.2
+Kv1.3
+Kv1.4
+Kv2.1
+Kv4.2
+Kv4.3
+Kv7.1
+Kv7.2
+Kv7.3
+Kv11.1/hERG
+KATP channel Kir6.2
+Kir2.1
+Kir3.1
+HCN1
+HCN2
+HCN4
+TRPV1
+TRPV4
+TRPM8
+TRPA1
+TRPC1
+GluA1/GluR1
+GluA2/GluR2
+GluN1/NR1
+GluN2A/NR2A
+GluN2B/NR2B
+GluK1
+GluK2
+GABAA a1
+GABAA b2
+GABAA y2
+Glycine receptor a1
+nAChR a4
+nAChR b2
+nAChR a7
+P2X1
+PKA catalytic a
+PKA catalytic b
+PKA regulatory Ia
+PKA regulatory IIa
+PKC alpha
+PKC beta
+PKC delta
+PKC epsilon
+PKC gamma
+PKC theta
+PKC zeta
+PKC iota
+Akt1
+Akt2
+Akt3
+mTOR
+RAPTOR
+RICTOR
+PI3K catalytic a
+PI3K catalytic b
+PI3K catalytic δ
+PI3K catalytic y
+PTEN
+PDK1
+SGK1
+SGK2
+SGK3
+MAP kinase ERK1
+MAP kinase ERK2
+MEK1
+MEK2
+RAF1
+BRAF
+ARAF
+RAS
+KRAS
+NRAS
+JNK1
+JNK2
+JNK3
+p38a
+p38b
+p38y
+p38δ
+MKK4
+MKK7
+MKK3
+MKK6
+ASK1
+MLK3
+TAK1
+MEKK1
+MEKK4
+PAK1
+PAK2
+PAK3
+PAK4
+ROCK1
+ROCK2
+LIMK1
+LIMK2
+CaMKI
+CaMKII alpha
+CaMKII beta
+CaMKIV
+CaMKK1
+CaMKK2
+AMPK alpha-1
+AMPK alpha-2
+AMPK beta-1
+AMPK gamma-1
+GSK-3a
+GSK-3b
+CDK1
+CDK2
+CDK4
+CDK6
+CDK7
+CDK8
+CDK9
+Cyclin A1
+Cyclin A2
+Cyclin B1
+Cyclin B2
+Cyclin D1
+Cyclin D2
+Cyclin D3
+Cyclin E1
+Cyclin E2
+Rb protein
+p53
+p63
+p73
+p21/CIP1
+p27/KIP1
+p57/KIP2
+p16/INK4a
+p15/INK4b
+p18/INK4c
+p19/INK4d
+BRCA1
+BRCA2
+ATM
+ATR
+CHEK1
+CHEK2
+MDM2
+MDM4
+VHL
+APC
+SMAD2
+SMAD3
+SMAD4
+SMAD7
+NF1
+NF2
+WT1
+DCC
+RUNX1
+RUNX2
+RUNX3
+MLH1
+MSH2
+MSH6
+PMS2
+c-Myc
+N-Myc
+L-Myc
+Max
+Mad1
+Mnt
+c-Fos
+FosB
+Fra-1
+Fra-2
+c-Jun
+JunB
+JunD
+NFκB p50
+NFκB p65/RelA
+RelB
+c-Rel
+NFκB2/p52
+IκBa
+IκBb
+STAT1
+STAT2
+STAT3
+STAT4
+STAT5A
+STAT5B
+STAT6
+NFAT1/NFATc2
+NFAT2/NFATc1
+NFAT4/NFATc3
+HIF-1a
+HIF-2a/EPAS1
+HIF-1b/ARNT
+SP1
+SP3
+KLF4
+KLF2
+YAP1
+TAZ/WWTR1
+TEAD1
+TEAD4
+E2F1
+E2F2
+E2F3
+E2F4
+DP1
+DP2
+SOX2
+SOX9
+SOX17
+DNMT1
+DNMT3A
+DNMT3B
+DNMT3L
+TET1
+TET2
+TET3
+EZH2
+EZH1
+EED
+SUZ12
+RBBP4
+KDM1A/LSD1
+KDM2A
+KDM5A/JARID1A
+KDM5B/JARID1B
+KDM6A/UTX
+KDM6B/JMJD3
+SETD2
+SETDB1
+NSD1
+NSD2
+NSD3
+SMYD2
+SMYD3
+PRMT1
+PRMT5
+PRMT6
+CARM1/PRMT4
+DOT1L
+HDAC1
+HDAC2
+HDAC3
+HDAC4
+HDAC5
+HDAC6
+HDAC7
+HDAC8
+SIRT1
+SIRT2
+SIRT3
+SIRT4
+SIRT5
+SIRT6
+SIRT7
+EP300
+CREBBP
+BRD2
+BRD3
+BRD4
+PCNA
+RPA1
+RPA2
+RFC1
+DNA polymerase a
+DNA polymerase δ
+DNA polymerase ε
+DNA polymerase b
+DNA polymerase η
+DNA polymerase ι
+DNA polymerase κ
+DNA polymerase ζ
+DNA ligase I
+DNA ligase III
+DNA ligase IV
+XRCC1
+XRCC4
+XRCC5/Ku80
+XRCC6/Ku70
+DNA-PKcs
+RAD51
+RAD52
+RAD54
+PALB2
+BARD1
+RAD50
+MRE11
+NBS1/NBN
+FANCD2
+FANCA
+FANCB
+FANCC
+FANCE
+FANCF
+XPC
+XPA
+XPB/ERCC3
+XPD/ERCC2
+ERCC1
+CSA/ERCC8
+CSB/ERCC6
+UNG
+SMUG1
+OGG1
+NEIL1
+APE1
+MLH3
+PMS1
+EXO1
+MSH4
+Ubiquitin
+UBA1
+UBA2
+UBC
+UBE2A
+UBE2B
+UBE2C
+UBE2D1
+UBE2E1
+UBE2I/UBC9
+UBE2N
+BRCA1 RING domain
+MDM2 E3 ligase
+CHIP/STUB1
+SKP1
+SKP2
+b-TrCP1
+FBXW7
+TRIM32
+TRIM63/MuRF1
+Parkin/PARK2
+NEDD4
+NEDD4L
+SMURF1
+SMURF2
+ITCH
+WWP1
+PSMD1
+PSMD2
+PSMC1/Rpt2
+PSMC4/Rpt3
+PSMB1
+PSMB5
+PSMB8
+PSMB9
+USP7
+USP9X
+USP14
+UCHL1
+UCHL3
+OTUB1
+OTUB2
+A20/TNFAIP3
+CYLD
+SUMO1
+SUMO2
+SUMO3
+SAE1
+UBA52
+HSP70/HSPA1A
+HSP70/HSPA1B
+HSC70/HSPA8
+GRP78/BiP
+HSPA6
+HSP90a
+HSP90b
+GRP94/HSP90B1
+HSP60/HSPD1
+HSP10/HSPE1
+HSP40/DNAJB1
+DNAJA1
+DNAJA2
+DNAJC7
+HSP27/HSPB1
+aB-crystallin/HSPB5
+HSPB2
+HSPB3
+HSPB6
+HSPB8
+HSP105/HSPH1
+Hsp110/HSPH2
+Apg-1/HSPH3
+BAG1
+BAG2
+BAG3
+BAG4
+HOP/STIP1
+FKBP51
+FKBP52
+CyP40
+p23/PTGES3
+AHA1
+Hsp47/SERPINH1
+ERdj3/DNAJB11
+Calnexin
+Calreticulin
+ERp57
+PDI/P4HB
+ERp72/PDIA4
+Bcl-2
+Bcl-xL
+Bcl-w
+MCL-1
+A1/Bfl-1
+Bax
+Bak
+Bok
+Bad
+Bim
+Bid
+Puma
+Noxa
+Hrk
+Bmf
+Cytochrome c
+APAF-1
+Caspase-9
+Caspase-3
+Caspase-7
+Caspase-8
+Caspase-10
+Caspase-1
+Caspase-2
+Caspase-4
+XIAP
+cIAP1
+cIAP2
+Survivin/BIRC5
+ML-IAP/Livin
+SMAC/DIABLO
+HtrA2/Omi
+AIF
+Endonuclease G
+FADD
+TRADD
+RIP1/RIPK1
+RIP3/RIPK3
+MLKL
+FLIP-L
+Collagen type I alpha-1
+Collagen type I alpha-2
+Collagen type II alpha-1
+Collagen type III alpha-1
+Collagen type IV alpha-1
+Collagen type IV alpha-2
+Collagen type V alpha-1
+Collagen type VI alpha-1
+Collagen type VII alpha-1
+Fibronectin-1
+Laminin a1
+Laminin a2
+Laminin b1
+Laminin b2
+Laminin y1
+Vitronectin
+Osteopontin
+Tenascin-C
+Tenascin-R
+Periostin
+Versican
+Aggrecan
+Decorin
+Biglycan
+Lumican
+Fibulin-1
+Fibulin-2
+Fibulin-5
+SPARC
+Integrin a1
+Integrin a2
+Integrin a3
+Integrin a4
+Integrin a5
+Integrin a6
+Integrin aV
+Integrin b1
+Integrin b2
+Integrin b3
+Integrin b4
+E-cadherin
+N-cadherin
+P-cadherin
+VE-cadherin
+Cadherin-11
+a-catenin
+b-catenin
+y-catenin/plakoglobin
+p120-catenin
+Occludin
+Claudin-1
+Claudin-2
+Claudin-5
+ZO-1
+ZO-2
+ICAM-1
+ICAM-2
+VCAM-1
+PECAM-1
+NCAM1
+L1CAM
+ALCAM
+EPCAM
+Selectin E
+Selectin P
+Selectin L
+Dystroglycan
+Agrin
+Perlecan
+Nidogen-1
+TNF-a
+TNF-b/LTA
+IL-1a
+IL-1b
+IL-1Ra
+IL-2
+IL-4
+IL-5
+IL-6
+IL-7
+IL-8/CXCL8
+IL-10
+IL-12A
+IL-12B
+IL-13
+IL-15
+IL-17A
+IL-18
+IL-21
+IL-22
+IL-23A
+IL-33
+IFN-a1
+IFN-b1
+IFN-y
+TGF-b1
+TGF-b2
+TGF-b3
+M-CSF/CSF1
+G-CSF/CSF3
+GM-CSF/CSF2
+VEGF-A
+VEGF-B
+VEGF-C
+VEGF-D
+EGF
+HGF
+PDGF-A
+PDGF-B
+FGF1
+FGF2
+FGF7/KGF
+FGF21
+FGF23
+NGF
+BDNF
+NT-3
+NT-4
+MCP-1/CCL2
+RANTES/CCL5
+SDF-1/CXCL12
+Fractalkine/CX3CL1
+Eotaxin/CCL11
+MIP-1a/CCL3
+MIP-1b/CCL4
+CXCL10/IP-10
+CXCL9/MIG
+CXCL11/I-TAC
+CCL19
+TNFR1
+TNFR2
+IL-1R1
+IL-2Ra/CD25
+IL-6Ra
+gp130/IL6ST
+TLR1
+TLR2
+TLR3
+TLR4
+TLR5
+TLR7
+TLR8
+TLR9
+MyD88
+Hexokinase-1
+Hexokinase-2
+Glucokinase
+Phosphoglucose isomerase
+Phosphofructokinase-1
+Aldolase A
+Triosephosphate isomerase
+GAPDH
+Phosphoglycerate kinase 1
+Phosphoglycerate mutase 1
+Enolase 1
+Enolase 2
+Pyruvate kinase M1
+Lactate dehydrogenase A
+Lactate dehydrogenase B
+Pyruvate dehydrogenase E1a
+Pyruvate dehydrogenase E1b
+Citrate synthase
+Aconitase 2
+Isocitrate dehydrogenase 1
+Isocitrate dehydrogenase 2
+a-ketoglutarate dehydrogenase
+Succinyl-CoA synthetase a
+Succinate dehydrogenase A
+Fumarate hydratase
+Malate dehydrogenase 2
+Malate dehydrogenase 1
+Glutamate dehydrogenase 1
+Glutaminase
+Asparagine synthetase
+Fatty acid synthase
+Acetyl-CoA carboxylase 1
+Acetyl-CoA carboxylase 2
+ATP-citrate lyase
+Stearoyl-CoA desaturase
+CPT1A
+CPT1B
+CPT2
+HADHA
+HADHB
+HMGCR
+MVK
+SQLE
+DHCR7
+FASN
+G6PD
+PGD
+TKT
+TALDO1
+PHGDH
+RNA pol I
+RNA pol II
+RNA pol III
+TFIID/TBP
+TFIIH/ERCC3
+SF1
+U2AF1
+U2AF2
+SRSF1/ASF
+SRSF2/SC35
+hnRNP A1
+hnRNP A2/B1
+hnRNP C
+hnRNP K
+hnRNP D
+FUS
+TDP-43
+EWS
+eIF4E
+eIF4A
+eIF4G
+eIF2a
+eIF2B epsilon
+eIF3a
+PABPC1
+PABPN1
+DICER1
+DROSHA
+DGCR8
+AGO1
+AGO2
+AGO3
+AGO4
+GW182/TNRC6A
+XRN1
+DCP1A
+DCP2
+LSM1
+SMN1
+SMN2
+Gemin2
+Gemin3
+CPSF1
+CPSF4
+CstF77
+ADAR1
+ADAR2
+APOBEC3G
+METTL3
+METTL14
+Hemoglobin a
+Hemoglobin b
+Myoglobin
+Neuroglobin
+Cytoglobin
+Serum albumin
+Transferrin
+Transferrin receptor 1
+Transferrin receptor 2
+Ferritin heavy chain
+Ferritin light chain
+Haptoglobin
+Hemopexin
+Ceruloplasmin
+Transthyretin
+Thyroxine-binding globulin
+Corticosteroid-binding globulin
+Sex hormone-binding globulin
+Insulin-like growth factor binding protein 1
+IGFBP3
+IGFBP5
+Apolipoprotein A-I
+Apolipoprotein A-II
+Apolipoprotein B-100
+Apolipoprotein C-I
+Apolipoprotein C-II
+Apolipoprotein C-III
+Apolipoprotein E
+Apolipoprotein L1
+Apolipoprotein M
+Lipoprotein lipase
+ABCA1
+ABCB1/P-gp
+ABCB11
+ABCC1/MRP1
+ABCC2/MRP2
+ABCG2/BCRP
+SLC2A1/GLUT1
+SLC2A4/GLUT4
+SLC1A1
+SLC1A2
+SLC6A3/DAT
+SLC6A4/SERT
+SLC6A2/NET
+MCT1/SLC16A1
+MCT4/SLC16A3
+Nucleolin
+Nucleophosmin
+Importin-a1
+Importin-b1
+Insulin
+Glucagon
+Somatostatin
+Growth hormone
+Prolactin
+TSH b-subunit
+FSH b-subunit
+LH b-subunit
+hCG b-subunit
+ACTH/POMC
+Vasopressin
+Oxytocin
+Leptin
+Adiponectin
+Ghrelin
+Resistin
+Visfatin/NAMPT
+Erythropoietin
+Thrombopoietin
+Parathyroid hormone
+Calcitonin
+Natriuretic peptide ANP
+Natriuretic peptide BNP
+Natriuretic peptide CNP
+GLP-1/GCG
+GIP
+Amylin/IAPP
+Neuropeptide Y
+Substance P
+VIP
+CGRP
+Galanin
+Somatotropin
+Activin A
+Inhibin A
+Complement C1q
+Complement C3
+Complement C4A
+Complement C5
+Factor VIII
+Factor IX
+Factor X
+Thrombin/F2
+Fibrinogen a
+Fibrinogen b
+Fibrinogen y
+Plasminogen
+tPA
+uPA
+PAI-1
+a2-macroglobulin
+a1-antitrypsin
+Antithrombin III
+Protein C
+Protein S
+von Willebrand factor
+Fibronectin
+Vitronectin
+Opsin
+Rhodopsin kinase
+Arrestin-1
+Recoverin
+S100B
+S100A4
+S100A6
+S100A8
+S100A9
+S100A12
+Calmodulin 1
+Calmodulin 2
+Calmodulin 3
+Calbindin-1
+Calretinin
+Parvalbumin
