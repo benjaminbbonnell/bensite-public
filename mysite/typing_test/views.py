@@ -1,5 +1,7 @@
 import random
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from asgiref.sync import sync_to_async
 from .models import Words
 
 def index(request):
@@ -18,6 +20,23 @@ def index(request):
     }
 
     return render(request, 'typing_test/typing_test.html', context)
+
+
+async def get_new_string(request):
+    all_ids_list = await sync_to_async(list)(
+        Words.objects.values_list('id', flat=True)
+    )
+    
+    sample_ids = random.sample(all_ids_list, k=50)
+    
+    words_data = await sync_to_async(list)(
+        Words.objects.filter(id__in=sample_ids).values('id', 'word')
+    )
+    
+    id_to_word = {item['id']: item['word'] for item in words_data}
+    test_string = " ".join(id_to_word[id] for id in sample_ids)
+
+    return JsonResponse({"new_string": test_string})
 
 
 def redirect_to_bensite_index(request):

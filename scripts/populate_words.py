@@ -27,4 +27,5 @@ with open('words.txt', 'r', encoding='utf-8-sig') as file:
         word_count = word.count(" ") + 1
         insertwords(word, word_count, word_set)
 
+connection.close()
 print("Script complete")

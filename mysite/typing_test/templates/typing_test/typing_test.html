@@ -26,7 +26,7 @@
         position: absolute;
         background-color: white;
         animation: blink 1s infinite;
-        margin-right: -2px;  /* This prevents it from pushing characters */
+        margin-right: -2px;
     }
 
 @keyframes blink {
@@ -35,8 +35,20 @@
 }
 </style>
 
-<div class="d-flex justify-content-center align-items-center">
-    <div class="row align-items-center g-8">
+<div class="d-flex flex-column justify-content-center align-items-center">
+    <div class="row w-100">
+        <div class="col-3">
+        </div>
+        <div class="col-3">
+            <p style="text-align: center; font-size: 24px;"><span id="timer">10</span></p> 
+        </div>
+        <div class="col-3">
+        <!--    <p style="text-align: center; font-size: 24px;"><span id="wpm">WPM:</span></p> -->
+        </div>
+        <div class="col-3">
+        </div>
+    </div>
+    <div class="row w-100 align-items-center g-8">
         <div class="col-md-2 p-1">
         </div>
         <div class="col-md-8 p-1">
@@ -52,13 +64,39 @@
 
 let testText = "{{ test_string|escapejs }}";
 
-let test_text_words = testText.split(" ");
-let completed_words = [];
+let test_text_words;
+let completed_words;
 
-let current_word_index = 0;
-let current_word_char_index = 0;
+let current_word_index;
+let current_word_char_index;
 
-let current_typed_word = ""
+let current_typed_word;
+
+let testActive = true;
+
+let starting_time = 30;
+let time_left;
+
+const timer = setInterval(() => {
+    if (time_left <= 0) {
+        testActive = false;
+        calculateScore();
+        clearInterval(timer);
+    } else {
+        time_left--;
+        document.getElementById("timer").innerHTML = time_left;
+    }
+}, 1000);
+
+function setupTest() {
+    time_left = starting_time;
+    test_text_words = testText.split(" ");
+    completed_words = [];
+    current_word_index = 0;
+    current_word_char_index = 0;
+    current_typed_word = "";
+    testActive = true;
+}
 
 
 //-1 incorrect, 0 untyped, 1 correct
@@ -186,18 +224,39 @@ function generateSpan(letters_array, result_array, current_word_number, current_
     return result_display_string
 }
 
+async function new_test() {
+    try {
+        const response = await fetch('/typing_test/get_new_string/');
+        const data = await response.json();
+        testText = data.new_string;
+        console.log("new test string:", data.new_string)
+
+    } catch (error) {
+        console.error("Error fetching new test:", error);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', (event) => {
 
+    setupTest()
     check_word_array = checkWord(completed_words, test_text_words, current_word_index, current_word_char_index);
     key_result_letters = check_word_array[0]
-    key_result_string = check_word_array[1]
+    key_result_scores = check_word_array[1]
 
-    document.getElementById("test_string").innerHTML = generateSpan(key_result_letters, key_result_string, current_word_index, current_word_char_index)
-
-
+    document.getElementById("test_string").innerHTML = generateSpan(key_result_letters, key_result_scores, current_word_index, current_word_char_index)
+    document.getElementById("timer").innerHTML = starting_time;
+    starting_time = time_left;
 });
 
-document.addEventListener('keydown', (event) => {
+document.addEventListener('keydown', async (event) => {
+
+    if (!testActive) return;
+
+    if (event.key === "Tab") {
+        event.preventDefault();
+        await new_test()
+        setupTest()
+    }
 
     result_string = "";
 
@@ -229,6 +288,21 @@ document.addEventListener('keydown', (event) => {
 
 });
 
+function calculateScore() {
+    let WPM = 0;
+
+    check_word_array = checkWord(completed_words, test_text_words, current_word_index, current_word_char_index);
+
+    final_result_array = check_word_array[1];
+
+    let final_total = final_result_array.flat().reduce((acc, curr) => acc + curr, 0) / 5 / (starting_time / 60);
+
+    document.getElementById("test_string").innerHTML = `<span>WPM:${final_total}</span>`;
+
+    return WPM;
+}
+
+
 </script>
 
 
@@ -236,3 +310,4 @@ document.addEventListener('keydown', (event) => {
 </main>
 {% endblock %}
 
+t property structure mean world less
