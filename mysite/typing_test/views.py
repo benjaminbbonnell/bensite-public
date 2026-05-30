@@ -24,8 +24,11 @@ def index(request):
 
 
 async def get_new_string(request):
+
+    word_set_query = request.GET.get('word_set', 'english_standard')
+
     all_ids_list = await sync_to_async(list)(
-        Words.objects.values_list('id', flat=True)
+        Words.objects.filter(word_set_id=word_set_query).values_list('id', flat=True)
     )
     
     sample_ids = random.sample(all_ids_list, k=50)
