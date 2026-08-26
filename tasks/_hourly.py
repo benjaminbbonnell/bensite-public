@@ -1,51 +1,52 @@
 import os
 import sys
-import django
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
+
+import django
 
 project_root = Path(__file__).resolve().parent.parent / 'mysite'
 sys.path.insert(0, str(project_root))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
 django.setup()
 
-# flake8: noqa: E402
-from collector import main as collector_main
-from pivot import main as pivot_main
 from analysis import main as analysis_main
 from analysisv2 import main as analysis_mainv2
+from collector import main as collector_main
 from historical_data import main as historical_main
+from pivot import main as pivot_main
+
 
 def run_hourly():
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
     print(f"\n{'='*60}")
     print(f"[{timestamp}]: started hourly tasks.")
 
     try:
         collector_main()
-        end_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        end_timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
         print(f"[{end_timestamp}]: collected weather data successfully.")
 
         historical_main()
-        end_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        end_timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
         print(f"[{end_timestamp}]: collected historical weather data successfully.")
 
         pivot_main()
-        end_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        end_timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
         print(f"[{end_timestamp}]: pivot complete successfully.")
 
         analysis_main()
-        end_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        end_timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
         print(f"[{end_timestamp}]: analysis complete successfully.")
 
         analysis_mainv2()
-        end_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        end_timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
         print(f"[{end_timestamp}]: analysisv2 complete successfully.") 
 
         return 0
 
     except Exception as e:
-        error_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        error_timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
         print(f"[{error_timestamp}]: error running weather collection and analysis:")
         print(f"{str(e)}")
 

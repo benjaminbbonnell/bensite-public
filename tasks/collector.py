@@ -1,27 +1,24 @@
+import datetime
 import os
 import sys
 import time
-import datetime
+from io import StringIO
 from pathlib import Path
 
-import requests
-import psycopg2
-import pandas as pd
-
-from io import StringIO
-from dotenv import load_dotenv
-import pytz
-
 import django
+import pandas as pd
+import psycopg2
+import pytz
+import requests
 from django.db import connection
+from dotenv import load_dotenv
 
 project_root = Path(__file__).resolve().parent.parent / 'mysite'
 sys.path.insert(0, str(project_root))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
 django.setup()
 
-# flake8: noqa: E402
-from weather.models import WeatherServices, Locations
+from weather.models import Locations, WeatherServices
 
 project_folder = os.path.expanduser('~/mysite/.env')
 load_dotenv(project_folder)

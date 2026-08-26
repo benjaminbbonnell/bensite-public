@@ -1,0 +1,5 @@
+CRON_TZ=UTC
+
+0 * * * * /var/www/bensite-public/.venv/bin/python /var/www/bensite-public/tasks/_hourly.py
+
+0 0 * * * /var/www/bensite-public/.venv/bin/python /var/www/bensite-public/tasks/_daily.py
